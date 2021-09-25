@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#787773"
+    tools:context=".PlayerActivity">
+
+    <LinearLayout
+        android:id="@+id/primerySet"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/setOne">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            app:srcCompat="@drawable/cd_img"
+            android:layout_gravity="center" />
+    </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:id="@+id/setOne"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/primerySet">
+
+        <ImageView
+            android:id="@+id/equilizerBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_equalizer"
+            android:backgroundTint="@color/white" />
+
+        <TextView
+            android:id="@+id/displaySongName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="Song Name Will Dispaly Here"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/favoriteList"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_favorite"
+            android:backgroundTint="@color/white" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/setTwo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setOne">
+
+        <TextView
+            android:id="@+id/songStartTime"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:inputType="number"
+            android:text="00:00"
+            android:textColor="@color/white" />
+
+        <SeekBar
+            android:id="@+id/songSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@color/black"
+            android:thumbTint="@color/white" />
+
+        <TextView
+            android:id="@+id/songEndTime"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:gravity="center"
+            android:inputType="number"
+            android:text="10:00:00"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/setThree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setTwo"
+        app:layout_constraintVertical_bias="0.141">
+
+        <ImageView
+            android:id="@+id/shuffel"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="0"
+            android:background="@drawable/ic_shuffle"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/setThree"
+            app:layout_constraintEnd_toStartOf="@id/previous"
+            app:layout_constraintStart_toStartOf="@id/setThree"
+            app:layout_constraintTop_toTopOf="@id/setThree" />
+
+        <ImageView
+            android:id="@+id/previous"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_weight="0"
+            android:background="@drawable/ic_skip_previous"
+            android:backgroundTint="@color/white"
+            android:contentDescription="TODO"
+            app:layout_constraintBottom_toBottomOf="@id/setThree"
+            app:layout_constraintEnd_toStartOf="@id/rewind"
+            app:layout_constraintStart_toEndOf="@id/shuffel"
+            app:layout_constraintTop_toTopOf="@id/setThree" />
+
+        <ImageView
+            android:id="@+id/rewind"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/ic_fast_rewind"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/setThree"
+            app:layout_constraintEnd_toStartOf="@id/playPause"
+            app:layout_constraintStart_toEndOf="@id/previous"
+            app:layout_constraintTop_toTopOf="@id/setThree" />
+
+        <ImageView
+            android:id="@+id/playPause"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_weight="0"
+            android:background="@drawable/ic_pause"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/setThree"
+            app:layout_constraintEnd_toStartOf="@id/next"
+            app:layout_constraintStart_toEndOf="@id/previous"
+            app:layout_constraintTop_toTopOf="@id/setThree"
+            app:layout_constraintVertical_bias="0.324" />
+
+        <ImageView
+            android:id="@+id/fastForward"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/ic_fast_forward"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/next"
+            app:layout_constraintStart_toEndOf="@id/playPause"
+            app:layout_constraintTop_toTopOf="@id/setThree" />
+
+
+        <ImageView
+            android:id="@+id/next"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_weight="0"
+            android:background="@drawable/ic_skip_next"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/setThree"
+            app:layout_constraintEnd_toStartOf="@id/repeat"
+            app:layout_constraintStart_toEndOf="@id/fastForward"
+            app:layout_constraintTop_toTopOf="@id/setThree" />
+
+
+        <ImageView
+            android:id="@+id/repeat"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_repeat"
+            android:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/setThree"
+            app:layout_constraintEnd_toEndOf="@id/setThree"
+            app:layout_constraintHorizontal_bias="0.818"
+            app:layout_constraintStart_toEndOf="@id/fastForward"
+            app:layout_constraintTop_toTopOf="@id/setThree" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
