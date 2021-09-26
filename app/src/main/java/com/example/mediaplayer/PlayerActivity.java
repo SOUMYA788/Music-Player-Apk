@@ -2,13 +2,22 @@ package com.example.mediaplayer;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.widget.ImageViewCompat;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.media.MediaMetadata;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
@@ -26,6 +35,9 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
+
+import static com.example.mediaplayer.R.drawable.ic_repeat_one;
 
 public class PlayerActivity extends AppCompatActivity {
 
@@ -34,6 +46,8 @@ public class PlayerActivity extends AppCompatActivity {
     TextView displaySongName, songStartTime, songEndTime;
     SeekBar songSeekBar;
     Animation customAnimation;
+
+    static boolean shuffelBool = false, repeatBool = false;
 
     //other importants items
     String sname;
@@ -64,6 +78,7 @@ public class PlayerActivity extends AppCompatActivity {
         songStartTime = findViewById(R.id.songStartTime);
         songEndTime = findViewById(R.id.songEndTime);
 
+
         //Declear Rotation Animation
         customAnimation = AnimationUtils.loadAnimation(this, R.anim.rotation);
 
@@ -88,6 +103,7 @@ public class PlayerActivity extends AppCompatActivity {
         mediaPlayer.start();
         //startAnimation(imageView2);
         imageView2.startAnimation(customAnimation);
+
 
 
         updateSeekBar = new Thread()
@@ -116,12 +132,13 @@ public class PlayerActivity extends AppCompatActivity {
         songSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                if (seekBar.getProgress() == mediaPlayer.getDuration()){
+                    next.performClick();
+                }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
@@ -164,33 +181,30 @@ public class PlayerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 resetMediaplayerAndSeekbar();
-                position = ((position+1)%mySongs.size());
-                Uri u = Uri.parse(mySongs.get(position).toString());
-                mediaPlayer = MediaPlayer.create(getApplicationContext(), u);
-                sname = mySongs.get(position).getName();
-                displaySongName.setText(sname);
-                mediaPlayer.start();
-                playPause.setBackgroundResource(R.drawable.ic_pause);
-                //startAnimation(imageView2);
-                setSongTiming();
-                imageAnimation();
+                if (shuffelBool && !repeatBool){
+                    position = getRandom(mySongs.size()-1);
+                    changeMusicInMediaplayer();
+                }else if (!shuffelBool && !repeatBool){
+                    position = ((position + 1) % mySongs.size());
+                    changeMusicInMediaplayer();
+                }else {
+                    changeMusicInMediaplayer();
+                }
             }
         });
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 resetMediaplayerAndSeekbar();
-                position = ((position-1)<0)?(mySongs.size()-1):(position-1);
-                Uri u = Uri.parse(mySongs.get(position).toString());
-                mediaPlayer = MediaPlayer.create(getApplicationContext(), u);
-                sname = mySongs.get(position).getName();
-                displaySongName.setText(sname);
-                mediaPlayer.start();
-                playPause.setBackgroundResource(R.drawable.ic_pause);
-                //startAnimation(imageView2);
-                imageView2.startAnimation(customAnimation);
-                setSongTiming();
-                imageAnimation();
+                if (shuffelBool && !repeatBool){
+                    position = getRandom(mySongs.size()-1);
+                    changeMusicInMediaplayer();
+                }else if (!shuffelBool && !repeatBool){
+                    position = ((position + 1) % mySongs.size());
+                    changeMusicInMediaplayer();
+                }else {
+                    changeMusicInMediaplayer();
+                }
             }
         });
 
@@ -230,6 +244,41 @@ public class PlayerActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        shuffel.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                if (shuffelBool){
+                    shuffelBool = false;
+                    shuffel.setBackgroundTintList(ContextCompat.getColorStateList(PlayerActivity.this, R.color.white));
+
+                }else {
+                    shuffelBool = true;
+                    shuffel.setBackgroundTintList(ContextCompat.getColorStateList(PlayerActivity.this, R.color.RoyleBlue));
+                }
+            }
+        });
+
+
+        repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (repeatBool){
+                    repeatBool = false;
+                    repeat.setImageResource(R.drawable.ic_repeat);
+                }else {
+                    repeatBool = true;
+                    repeat.setImageResource(R.drawable.ic_repeat_one);
+                }
+            }
+        });
+    }
+
+    private int getRandom(int i) {
+        Random random = new Random();
+        return random.nextInt(i+1);
     }
 
     public void setSongTiming(){
@@ -258,7 +307,17 @@ public class PlayerActivity extends AppCompatActivity {
     public void resetMediaplayerAndSeekbar(){
         mediaPlayer.stop();
         mediaPlayer.release();
-        songSeekBar.setProgress(0);
+    }
+    public void changeMusicInMediaplayer(){
+        Uri u = Uri.parse(mySongs.get(position).toString());
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), u);
+        sname = mySongs.get(position).getName();
+        displaySongName.setText(sname);
+        mediaPlayer.start();
+        playPause.setBackgroundResource(R.drawable.ic_pause);
+        //startAnimation(imageView2);
+        setSongTiming();
+        imageAnimation();
     }
 
     /*
@@ -286,4 +345,14 @@ public class PlayerActivity extends AppCompatActivity {
         time+= sec;
         return time;
     }
+    /*
+    public void metaData(Uri uri){
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(uri.toString());
+        byte[] art = retriever.getEmbeddedPicture();
+        if (art != null){
+
+        }
+    }
+    */
 }

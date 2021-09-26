@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Media Player</string>
+    <string name="song_name">Song Name Will Dispaly Here</string>
+    <string name="equilizer">Song Name Will Dispaly Here</string>
+    <string name="favorite">Favorite Songs will display here</string>
+    <string name="repeat">Current Song Will Repeating Start</string>
+    <string name="fast_forward">Current Song Will Fast Forward</string>
+    <string name="play_pause">When Current Music will Play or Pause</string>
+    <string name="Music_Image_View">Music image will display here.</string>
+    <string name="next">Next Song Will Play</string>
 </resources>

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#787773"
+    android:background="#010813"
     tools:context=".PlayerActivity">
 
     <LinearLayout
@@ -22,7 +23,8 @@
             android:layout_width="250dp"
             android:layout_height="250dp"
             app:srcCompat="@drawable/cd_img"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:contentDescription="@string/Music_Image_View" />
     </LinearLayout>
 
 
@@ -46,7 +48,8 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_equalizer"
-            android:backgroundTint="@color/white" />
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/equilizer" />
 
         <TextView
             android:id="@+id/displaySongName"
@@ -61,7 +64,7 @@
             android:paddingEnd="12dp"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:text="Song Name Will Dispaly Here"
+            android:text="@string/song_name"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20sp" />
@@ -71,7 +74,8 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_favorite"
-            android:backgroundTint="@color/white" />
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/favorite" />
     </LinearLayout>
 
 
@@ -94,15 +98,16 @@
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:gravity="center"
             android:inputType="number"
             android:text="00:00"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            tools:ignore="HardcodedText,TextViewEdits" />
 
         <SeekBar
             android:id="@+id/songSeekBar"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:progressBackgroundTint="@color/white"
@@ -114,11 +119,12 @@
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:gravity="center"
             android:inputType="number"
             android:text="10:00:00"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            tools:ignore="HardcodedText,TextViewEdits" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -145,7 +151,9 @@
             app:layout_constraintBottom_toBottomOf="@id/setThree"
             app:layout_constraintEnd_toStartOf="@id/previous"
             app:layout_constraintStart_toStartOf="@id/setThree"
-            app:layout_constraintTop_toTopOf="@id/setThree" />
+            app:layout_constraintTop_toTopOf="@id/setThree"
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
 
         <ImageView
             android:id="@+id/previous"
@@ -158,7 +166,8 @@
             app:layout_constraintBottom_toBottomOf="@id/setThree"
             app:layout_constraintEnd_toStartOf="@id/rewind"
             app:layout_constraintStart_toEndOf="@id/shuffel"
-            app:layout_constraintTop_toTopOf="@id/setThree" />
+            app:layout_constraintTop_toTopOf="@id/setThree"
+            tools:ignore="ContentDescription,HardcodedText" />
 
         <ImageView
             android:id="@+id/rewind"
@@ -169,20 +178,22 @@
             app:layout_constraintBottom_toBottomOf="@id/setThree"
             app:layout_constraintEnd_toStartOf="@id/playPause"
             app:layout_constraintStart_toEndOf="@id/previous"
-            app:layout_constraintTop_toTopOf="@id/setThree" />
+            app:layout_constraintTop_toTopOf="@id/setThree"
+            android:contentDescription="TODO"
+            tools:ignore="ContentDescription,HardcodedText" />
 
         <ImageView
             android:id="@+id/playPause"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_weight="0"
             android:background="@drawable/ic_pause"
             android:backgroundTint="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/setThree"
             app:layout_constraintEnd_toStartOf="@id/next"
             app:layout_constraintStart_toEndOf="@id/previous"
             app:layout_constraintTop_toTopOf="@id/setThree"
-            app:layout_constraintVertical_bias="0.324" />
+            app:layout_constraintVertical_bias="0.324"
+            android:contentDescription="@string/play_pause" />
 
         <ImageView
             android:id="@+id/fastForward"
@@ -193,7 +204,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/next"
             app:layout_constraintStart_toEndOf="@id/playPause"
-            app:layout_constraintTop_toTopOf="@id/setThree" />
+            app:layout_constraintTop_toTopOf="@id/setThree"
+            android:contentDescription="@string/fast_forward" />
 
 
         <ImageView
@@ -206,7 +218,8 @@
             app:layout_constraintBottom_toBottomOf="@id/setThree"
             app:layout_constraintEnd_toStartOf="@id/repeat"
             app:layout_constraintStart_toEndOf="@id/fastForward"
-            app:layout_constraintTop_toTopOf="@id/setThree" />
+            app:layout_constraintTop_toTopOf="@id/setThree"
+            android:contentDescription="@string/next" />
 
 
         <ImageView
@@ -220,7 +233,9 @@
             app:layout_constraintEnd_toEndOf="@id/setThree"
             app:layout_constraintHorizontal_bias="0.818"
             app:layout_constraintStart_toEndOf="@id/fastForward"
-            app:layout_constraintTop_toTopOf="@id/setThree" />
+            app:layout_constraintTop_toTopOf="@id/setThree"
+            app:tint="@color/white"
+            android:contentDescription="@string/repeat" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
