@@ -107,67 +107,15 @@ public class MainActivity extends AppCompatActivity {
 
         items = new String[mySongs.size() + myInternalSongs.size()];
 
-
         for (int i=0; i<mySongs.size();i++)
         {
             items[i]=mySongs.get(i).getName().toString().replace(".mp3", "").replace(".wav", "");
         }
-        musicListView.setLayoutManager(new LinearLayoutManager(this));
 
-        //PlayerActivity.customAdapter customAdapter = new customAdapter(items, getApplicationContext());
+        musicListView.setLayoutManager(new LinearLayoutManager(this));
         customAdapter customAdapter = new customAdapter(items,getApplicationContext(), mySongs);
         musicListView.setAdapter(customAdapter);
-
-        /*
-        musicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                String songName = (String) musicListView.getItemAtPosition(position);
-                Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
-                intent.putExtra("songs", mySongs);
-                intent.putExtra("songName", songName);
-                intent.putExtra("position", position);
-                startActivity(intent);
-            }
-        });
-        */
-
     }
-
-/*
-    class customAdapter extends BaseAdapter
-    {
-
-        @Override
-        public int getCount() {
-            return items.length;
-        }
-
-        @Override
-        public Object getItem(int position)
-        {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position)
-        {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
-           View myView = getLayoutInflater().inflate(R.layout.list_of_song, null);
-           TextView textSong = myView.findViewById(R.id.txtSongName);
-           textSong.setSelected(true);
-           textSong.setText(items[position]);
-           return myView;
-        }
-    }
-*/
-
 
     class customAdapter extends RecyclerView.Adapter<customAdapter.holder>
     {
@@ -191,13 +139,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull holder holder, int position) {
             holder.indSngNme.setText(songData[position]);
-
             final String songName = songData[position];
-
             holder.indSngNme.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
                     intent.putExtra("songs", mySongs);
                     intent.putExtra("songName", songName);
@@ -217,12 +162,10 @@ public class MainActivity extends AppCompatActivity {
             ImageView imageView;
             TextView indSngNme;
             public holder(@NonNull View itemView) {
-
                 super(itemView);
                 imageView = itemView.findViewById(R.id.imgSong);
                 indSngNme = itemView.findViewById(R.id.txtSongName);
             }
         }
     }
-
 }
