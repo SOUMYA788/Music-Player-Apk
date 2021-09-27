@@ -9,12 +9,14 @@
     android:orientation="vertical">
 
 
-    <ListView
-        android:id="@+id/listViewOne"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/musicListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@android:color/transparent"
-        android:dividerHeight="2sp"/>
+        android:dividerHeight="2sp">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </LinearLayout>

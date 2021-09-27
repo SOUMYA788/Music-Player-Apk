@@ -1,19 +1,23 @@
 package com.example.mediaplayer;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.karumi.dexter.Dexter;
@@ -27,7 +31,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    ListView listViewOne;
+    RecyclerView musicListView;
     String[]items;
     String SDCard;
     File TargetSdCard;
@@ -35,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listViewOne = findViewById(R.id.listViewOne);
-
+        musicListView = findViewById(R.id.musicListView);
 
         runtimePermission();
     }
@@ -109,17 +112,18 @@ public class MainActivity extends AppCompatActivity {
         {
             items[i]=mySongs.get(i).getName().toString().replace(".mp3", "").replace(".wav", "");
         }
+        musicListView.setLayoutManager(new LinearLayoutManager(this));
 
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, items);
-        customAdapter customAdapter = new customAdapter();
-        listViewOne.setAdapter(customAdapter);
+        //PlayerActivity.customAdapter customAdapter = new customAdapter(items, getApplicationContext());
+        customAdapter customAdapter = new customAdapter(items,getApplicationContext(), mySongs);
+        musicListView.setAdapter(customAdapter);
 
-
-        listViewOne.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*
+        musicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String songName = (String) listViewOne.getItemAtPosition(position);
+                String songName = (String) musicListView.getItemAtPosition(position);
                 Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
                 intent.putExtra("songs", mySongs);
                 intent.putExtra("songName", songName);
@@ -127,8 +131,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        */
 
     }
+
+/*
     class customAdapter extends BaseAdapter
     {
 
@@ -138,17 +145,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public Object getItem(int position) {
+        public Object getItem(int position)
+        {
             return null;
         }
 
         @Override
-        public long getItemId(int position) {
+        public long getItemId(int position)
+        {
             return 0;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
            View myView = getLayoutInflater().inflate(R.layout.list_of_song, null);
            TextView textSong = myView.findViewById(R.id.txtSongName);
            textSong.setSelected(true);
@@ -156,4 +166,63 @@ public class MainActivity extends AppCompatActivity {
            return myView;
         }
     }
+*/
+
+
+    class customAdapter extends RecyclerView.Adapter<customAdapter.holder>
+    {
+        String[] songData;
+        Context context;
+        ArrayList<File> mySongs;
+
+        public customAdapter(String[] songData, Context context, ArrayList<File> mySongs) {
+            this.songData = songData;
+            this.context = context;
+            this.mySongs = mySongs;
+        }
+
+        @NonNull
+        @Override
+        public holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_of_song, parent,false);
+            return new holder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull holder holder, int position) {
+            holder.indSngNme.setText(songData[position]);
+
+            final String songName = songData[position];
+
+            holder.indSngNme.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+                    intent.putExtra("songs", mySongs);
+                    intent.putExtra("songName", songName);
+                    intent.putExtra("position", position);
+                    startActivity(intent);
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return songData.length;
+        }
+
+        class holder extends RecyclerView.ViewHolder
+        {
+            ImageView imageView;
+            TextView indSngNme;
+            public holder(@NonNull View itemView) {
+
+                super(itemView);
+                imageView = itemView.findViewById(R.id.imgSong);
+                indSngNme = itemView.findViewById(R.id.txtSongName);
+            }
+        }
+    }
+
 }

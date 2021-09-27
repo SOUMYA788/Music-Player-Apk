@@ -111,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:progressBackgroundTint="@color/white"
-            android:progressTint="@color/black"
+            android:progressTint="@color/white"
             android:thumbTint="@color/white" />
 
         <TextView
