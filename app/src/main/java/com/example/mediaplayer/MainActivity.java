@@ -9,14 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -138,9 +140,25 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull holder holder, int position) {
+
+            // Setting Name and Image of song in list of songs
             holder.indSngNme.setText(songData[position]);
-            final String songName = songData[position];
+
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(mySongs.get(position).getPath());
+            byte[] art = retriever.getEmbeddedPicture();
+            if (art!=null)
+            {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
+                holder.imageView.setImageBitmap(bitmap);
+            }
+            retriever.release();
+
+
+            // getting current song name to send this on PlayerActivity
             holder.indSngNme.setOnClickListener(new View.OnClickListener() {
+                final String songName = songData[position];
+
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
@@ -167,5 +185,16 @@ public class MainActivity extends AppCompatActivity {
                 indSngNme = itemView.findViewById(R.id.txtSongName);
             }
         }
+
+        private byte[] getAlbumArt(String uri){
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(uri);
+            byte[] art = retriever.getEmbeddedPicture();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
+
+            retriever.release();
+            return art;
+        }
     }
+
 }

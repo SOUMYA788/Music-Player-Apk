@@ -15,6 +15,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -55,6 +57,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     //other importants items
     String sname;
+    byte[] sImg;
     public static final String EXTRA_NAME = "song_name";
     static MediaPlayer mediaPlayer;
     int position;
@@ -100,8 +103,11 @@ public class PlayerActivity extends AppCompatActivity {
         position = bundle.getInt("position",0);
         displaySongName.setSelected(true);
         Uri uri = Uri.parse(mySongs.get(position).toString());
+        musicImageSetter();
         sname = mySongs.get(position).getName();
         displaySongName.setText(sname);
+
+
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
         mediaPlayer.start();
@@ -187,11 +193,14 @@ public class PlayerActivity extends AppCompatActivity {
                 resetMediaplayerAndSeekbar();
                 if (shuffelBool && !repeatBool){
                     position = getRandom(mySongs.size()-1);
+                    musicImageSetter();
                     changeMusicInMediaplayer();
                 }else if (!shuffelBool && !repeatBool){
                     position = ((position + 1) % mySongs.size());
+                    musicImageSetter();
                     changeMusicInMediaplayer();
                 }else {
+                    musicImageSetter();
                     changeMusicInMediaplayer();
                 }
             }
@@ -202,11 +211,14 @@ public class PlayerActivity extends AppCompatActivity {
                 resetMediaplayerAndSeekbar();
                 if (shuffelBool && !repeatBool){
                     position = getRandom(mySongs.size()-1);
+                    musicImageSetter();
                     changeMusicInMediaplayer();
                 }else if (!shuffelBool && !repeatBool){
                     position = ((position + 1) % mySongs.size());
+                    musicImageSetter();
                     changeMusicInMediaplayer();
                 }else {
+                    musicImageSetter();
                     changeMusicInMediaplayer();
                 }
             }
@@ -278,6 +290,23 @@ public class PlayerActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+    }
+
+    private void musicImageSetter() {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        Uri u = Uri.parse(mySongs.get(position).toString());
+        retriever.setDataSource(u.toString());
+        byte[] art = retriever.getEmbeddedPicture();
+        if (art!=null)
+        {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
+            imageView2.setImageBitmap(bitmap);
+        }else{
+            imageView2.setImageResource(R.drawable.cd_img);
+        }
+        retriever.release();
     }
 
     private int getRandom(int i) {
@@ -359,6 +388,8 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
     */
+
+
 
 
 }
