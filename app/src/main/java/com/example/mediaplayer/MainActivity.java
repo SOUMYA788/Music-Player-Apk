@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<MusicFiles> musicFiles;// Use in runtime permission, for collecting all songs in one array list.
     static ArrayList<VideoMusicFiles> videoMusicFiles;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -72,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
         TabLayout musicListMenuTabLayout = findViewById(R.id.musicListMenuTabLayout);
 
         viewPagerAdapter viewPagerAdapter = new viewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragments(new SongsListFragment(), "Songs");
-        viewPagerAdapter.addFragments(new VideoFragment(), "Albums");
+        viewPagerAdapter.addFragments(new SongsListFragment(), "AUDIO MUSIC");
+        viewPagerAdapter.addFragments(new VideoFragment(), "VIDEO MUSIC");
 
         musicListViewPager.setAdapter(viewPagerAdapter);
         musicListMenuTabLayout.setupWithViewPager(musicListViewPager);
@@ -140,15 +141,12 @@ public class MainActivity extends AppCompatActivity {
                 String artist  = cursor.getString(4);
 
                 MusicFiles musicFiles = new MusicFiles(path, title, artist, album, duration);
-                // Take a log
-                Log.e("Path: "+path, " Album: "+album);
                 tempAudioList.add(musicFiles);
             }
             cursor.close();
         }
         return tempAudioList;
     }
-
 
     public static ArrayList<VideoMusicFiles> getAllVideo(Context context)
     {
@@ -175,5 +173,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return tempVideoList;
     }
-
 }
