@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VideoPlayerActivity">
+
+    <com.halilibo.bvpkotlin.BetterVideoPlayer
+        android:id="@+id/videoPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:bvp_autoPlay="true"
+        app:bvp_disableControls="false"
+        app:bvp_hideControlsOnPlay="true"
+        app:bvp_pauseDrawable="@drawable/bvp_action_pause"
+        app:bvp_playDrawable="@drawable/bvp_action_play"
+        app:bvp_restartDrawable="@drawable/bvp_action_restart"
+        app:bvp_gestureType="SwipeGesture" />
+
+
+</LinearLayout>

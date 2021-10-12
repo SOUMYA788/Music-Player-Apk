@@ -8,4 +8,10 @@
     <string name="play_pause">When Current Music will Play or Pause</string>
     <string name="Music_Image_View">Music image will display here.</string>
     <string name="next">Next Song Will Play</string>
+    <string name="tracks">TRACKS</string>
+    <string name="albums">ALBUMS</string>
+    <string name="artists">ARTISTS</string>
+    <string name="folders">FOLDERS</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

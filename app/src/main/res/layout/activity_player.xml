@@ -8,6 +8,7 @@
     android:background="#010813"
     tools:context=".PlayerActivity">
 
+
     <LinearLayout
         android:id="@+id/primerySet"
         android:layout_marginTop="30dp"
@@ -23,8 +24,8 @@
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_gravity="center"
-            android:contentDescription="@string/Music_Image_View"
-            android:background="@drawable/cd_img" />
+            android:background="@drawable/cd_img"
+            android:contentDescription="@string/Music_Image_View" />
     </LinearLayout>
 
 
@@ -51,31 +52,55 @@
             android:backgroundTint="@color/white"
             android:contentDescription="@string/equilizer" />
 
-        <TextView
-            android:id="@+id/displaySongName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:text="@string/song_name"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
 
-        <ImageView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/displaySongName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="@string/song_name"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:id="@+id/artistName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Artist Name"
+                android:layout_marginTop="10dp"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+
+
+
+        <ToggleButton
             android:id="@+id/favoriteList"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/ic_favorite"
-            android:backgroundTint="@color/white"
-            android:contentDescription="@string/favorite" />
+            android:textSize="0sp"
+            android:background="@drawable/ic_favorite" />
     </LinearLayout>
 
 
@@ -186,7 +211,6 @@
             android:id="@+id/playPause"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/ic_pause"
             android:backgroundTint="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/setThree"
             app:layout_constraintEnd_toStartOf="@id/next"

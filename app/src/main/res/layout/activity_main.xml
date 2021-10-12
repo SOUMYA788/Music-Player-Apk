@@ -4,19 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightBlue"
+    android:background="@color/listColor"
+    android:orientation="vertical"
+    tools:actionBarNavMode="tabs"
     tools:context=".MainActivity"
-    android:orientation="vertical">
+    tools:menu="@menu/music_menu">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/musicListView"
+        <include layout="@layout/home_toolbar" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/musicListMenuTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/listColor"
+            app:tabIndicatorFullWidth="false"
+            app:tabTextColor="@color/listTabItemColor"
+            app:tabIndicatorColor="@color/listTabItemColor"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="2sp">
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:padding="5dp">
 
-    </androidx.recyclerview.widget.RecyclerView>
-
+        <androidx.viewpager.widget.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/musicListViewPager" />
+    </LinearLayout>
 
 </LinearLayout>

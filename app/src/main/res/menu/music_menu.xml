@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/tracks"
+        android:title="TRACKS" />
+    <item
+        android:id="@+id/albums"
+        android:title="ALBUMS" />
+    <item
+        android:id="@+id/artist"
+        android:title="ARTIST" />
+    <item
+        android:id="@+id/folders"
+        android:title="FOLDERS" />
+</menu>

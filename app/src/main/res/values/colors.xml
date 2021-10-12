@@ -6,10 +6,13 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="blue">#010813</color>
+    <color name="blue">#090d11</color>
+    <color name="listColor">#1c2939</color>
+    <color name="listTabItemColor">#3c8cf0</color>
     <color name="lightBlue">#3A7FEC</color>
     <color name="lightBlack">#424242</color>
     <color name="white">#FFFFFFFF</color>
     <color name="RoyleBlue">#4169E1</color>
+    <color name="red">#FF0000</color>
 
 </resources>
