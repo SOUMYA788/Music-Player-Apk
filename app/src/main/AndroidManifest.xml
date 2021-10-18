@@ -11,12 +11,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MediaPlayer">
-        <activity android:name=".VideoPlayerActivity"></activity>
+
+        <activity
+            android:name=".VideoPlayerActivity"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|screenSize">
+
+        </activity>
+
+
         <activity
             android:name=".PlayerActivity"
             android:label="Playing Music"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".MainActivity"
             android:label="MUSIC"

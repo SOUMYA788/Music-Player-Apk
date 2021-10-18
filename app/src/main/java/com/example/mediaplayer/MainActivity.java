@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         musicListMenuTabLayout.setupWithViewPager(musicListViewPager);
     }
 
-    public static class viewPagerAdapter extends FragmentPagerAdapter
+    public static class viewPagerAdapter extends FragmentStatePagerAdapter
     {
 
         private ArrayList<Fragment> fragments;

@@ -141,6 +141,7 @@ public class PlayerActivity extends AppCompatActivity
                 while (currentPosition<totalDuration)
                 {
                     try
+
                     {
                         currentPosition = mediaPlayer.getCurrentPosition();
                         songSeekBar.setProgress(currentPosition);

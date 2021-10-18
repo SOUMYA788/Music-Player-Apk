@@ -16,7 +16,7 @@
         android:background="@drawable/ic_music"
         android:backgroundTint="@color/white"
         android:layout_gravity="center"
-        android:layout_marginStart="10dp"/>
+        android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/txtSongName"
