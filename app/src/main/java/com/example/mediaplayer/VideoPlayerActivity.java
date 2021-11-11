@@ -1,25 +1,18 @@
 package com.example.mediaplayer;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintLayoutStates;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -48,11 +41,28 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        super.onCreate(savedInstanceState);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_video_player);
 
+
+        // Dealers XML File View here.
+        xmlFileView();
+
+        myVideoSongs = videoMusicFiles;
+
+        videoPlayPause.setImageResource(R.drawable.ic_pause);
+
+        position  = getIntent().getIntExtra("videoListPosition", 0);
+        playInitialVideo();
+
+        activatingControlPanel();
+
+        // on create ends here.
+    }
+
+    private void xmlFileView() {
         songNameTextView = findViewById(R.id.songNameTextView);
         videoStartTime = findViewById(R.id.videoStartTime);
         videoEndTime = findViewById(R.id.videoEndTime);
@@ -67,14 +77,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
         player = findViewById(R.id.videoPlayer);
         videoControlPannel = findViewById(R.id.videoControlPannel);
         videoViewRelativeLayout = findViewById(R.id.videoViewRelativeLayout);
+    }
 
-        myVideoSongs = videoMusicFiles;
-
-        videoPlayPause.setImageResource(R.drawable.ic_pause);
-
-        position  = getIntent().getIntExtra("position", 0);
-        playInitialVideo();
-
+    private void activatingControlPanel() {
         // Video Control Panel
         videoPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +149,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
                 {
-                   setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 }else{
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
@@ -162,7 +167,6 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 }
             }
         });
-        // on create ends here.
     }
 
     private void playInitialVideo(){

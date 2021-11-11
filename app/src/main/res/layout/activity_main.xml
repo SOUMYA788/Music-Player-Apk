@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activityMainXML"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,33 +14,40 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/home_toolbar" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/musicListMenuTabLayout"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/listColor"
-            app:tabIndicatorFullWidth="false"
-            app:tabTextColor="@color/listTabItemColor"
-            app:tabIndicatorColor="@color/listTabItemColor"/>
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <include layout="@layout/home_toolbar" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp"
-        android:padding="5dp">
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/musicListMenuTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/listColor"
+                app:tabIndicatorFullWidth="false"
+                app:tabTextColor="@color/listTabItemColor"
+                app:tabIndicatorColor="@color/listTabItemColor"/>
 
-        <androidx.viewpager.widget.ViewPager
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/musicListViewPager" />
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:padding="5dp">
+
+            <androidx.viewpager.widget.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/musicListViewPager" />
+        </LinearLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -27,12 +28,15 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     static ArrayList<MusicFiles> musicFiles;// Use in runtime permission, for collecting all songs in one array list.
     static ArrayList<VideoMusicFiles> videoMusicFiles;
+    String[] items;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -121,8 +125,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static ArrayList<MusicFiles> getAllAudio(Context context)
-    {
+    public static ArrayList<MusicFiles> getAllAudio(Context context) {
         ArrayList<MusicFiles> tempAudioList = new ArrayList<>();
         Uri uri  = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
@@ -149,8 +152,7 @@ public class MainActivity extends AppCompatActivity {
         return tempAudioList;
     }
 
-    public static ArrayList<VideoMusicFiles> getAllVideo(Context context)
-    {
+    public static ArrayList<VideoMusicFiles> getAllVideo(Context context) {
         ArrayList<VideoMusicFiles> tempVideoList = new ArrayList<>();
         Uri uri  = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
@@ -166,8 +168,6 @@ public class MainActivity extends AppCompatActivity {
                 String duration  = cursor.getString(2);
 
                 VideoMusicFiles videoMusicFiles = new VideoMusicFiles(path, title, duration);
-                // Take a log
-                Log.e("Path: "+path, " and title is "+title);
                 tempVideoList.add(videoMusicFiles);
             }
             cursor.close();

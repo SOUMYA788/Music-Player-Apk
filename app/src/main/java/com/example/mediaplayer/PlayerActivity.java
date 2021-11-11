@@ -1,26 +1,12 @@
 package com.example.mediaplayer;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.widget.ImageViewCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.TimeAnimator;
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.MediaMetadata;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
@@ -28,11 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -47,12 +29,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static com.example.mediaplayer.MainActivity.musicFiles;
-import static com.example.mediaplayer.R.drawable.ic_repeat_one;
 
-public class PlayerActivity extends AppCompatActivity
-{
+public class PlayerActivity extends AppCompatActivity {
 
-    // List of items in music player app
+    // View Elements
     ImageView imageView2, shuffel,previous,rewind,playPause,fastForward,next,repeat,equilizerBtn;
     ToggleButton favoriteList;
     TextView displaySongName,artistName, songStartTime, songEndTime;
@@ -74,12 +54,66 @@ public class PlayerActivity extends AppCompatActivity
     Thread updateSeekBar;
     private Handler handler = new Handler();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
         // Define Elements
+        viewElements();
+
+        //Declare Rotation Animation
+        customAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotation);
+        customAnimation.setInterpolator(new LinearInterpolator());
+
+        // Getting Position through Intent
+        position = getIntent().getIntExtra("audioListPosition", 0);
+
+        mySongs = musicFiles;
+
+        // Setup URI
+        if (mySongs!=null)
+        {
+            playPause.setImageResource(R.drawable.ic_pause);
+            uri = uri.parse(mySongs.get(position).getPath());
+        }
+
+        // Reset Media Player
+        if (mediaPlayer!=null)
+        {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+
+        setMusicAndArtistName();
+        setMusicImage();
+        displaySongName.setSelected(true);
+
+        setupNewMediaPlayer();
+        imageView2.startAnimation(customAnimation);
+
+        setseekbarMaxAndUpdateSeekbar();
+
+        setSongTiming();
+
+        // Activating Buttons
+        activatePlayPauseButton();
+        currentSongOver();
+        activateNextSongButton();
+        activatePreviousSongButton();
+        activateFastForwardButton();
+        activateRewindButton();
+        activatingEqualizer();
+        activatingSongSuffelButton();
+        activatingRepeatButton();
+        // Favorite Music List
+
+        // ON CREATE METHOD ends here
+    }
+
+    // Define View Elements on XML file
+    private void viewElements() {
         imageView2 = findViewById(R.id.imageView2);
         shuffel = findViewById(R.id.shuffel);
         previous = findViewById(R.id.previous);
@@ -96,40 +130,104 @@ public class PlayerActivity extends AppCompatActivity
         songStartTime = findViewById(R.id.songStartTime);
         songEndTime = findViewById(R.id.songEndTime);
         favSongs = new ArrayList<>();
+    }
 
-        //Declear Rotation Animation
-        customAnimation = AnimationUtils.loadAnimation(this, R.anim.rotation);
-        customAnimation.setInterpolator(new LinearInterpolator());
+    // Activation of Media Console
+    private void activatingRepeatButton() {
+        repeat.setOnClickListener(v -> {
+            // created by me with youtube video help
+            if (repeatBool){
+                repeatBool = false;
+                repeat.setImageResource(R.drawable.ic_repeat);
+            }else {
+                repeatBool = true;
+                repeat.setImageResource(R.drawable.ic_repeat_one);
+            }
+        });
+    }
 
-        position = getIntent().getIntExtra("position", 0);
-        mySongs = musicFiles;
+    private void activatingSongSuffelButton() {
+        shuffel.setOnClickListener(new View.OnClickListener() {
+            //same as repeat, it is created by video help
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                if (shuffelBool){
+                    shuffelBool = false;
+                    shuffel.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.white));
+                }else {
+                    shuffelBool = true;
+                    shuffel.setBackgroundTintList(ContextCompat.getColorStateList(getApplicationContext(), R.color.RoyleBlue));
+                }
+            }
+        });
+    }
 
-        // Setup URI and Reset Media Player.
-        if (mySongs!=null)
+    private void activatingEqualizer() {
+        equilizerBtn.setOnClickListener(v -> {
+            try {
+                Intent eqIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+                eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getApplicationContext().getPackageName());
+                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, getApplicationContext().getPackageName());
+                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.getAudioSessionId());
+                eqIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
+                startActivityForResult(eqIntent, 13);
+                Toast.makeText(getApplicationContext(), "Presenting Equalizer", Toast.LENGTH_SHORT).show();
+            }catch (Exception e){
+                Toast.makeText(getApplicationContext(), "Equilizer Not Found", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void activateRewindButton() {
+        rewind.setOnClickListener(new View.OnClickListener()
         {
-            playPause.setImageResource(R.drawable.ic_pause);
-            uri = Uri.parse(mySongs.get(position).getPath()); // This will gives us song path in string mode
-        }
-        if (mediaPlayer!=null)
-        {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-        }
+            @Override
+            public void onClick(View v) {
+                if (mediaPlayer.isPlaying())
+                {
+                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition()-3000);
+                }
+            }
+        });
+    }
 
-        // Setting Music Name, Artist Name and Music Image
+    private void activateFastForwardButton() {
+        fastForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 3000);
+                }
+            }
+        });
+    }
+
+
+    private void setMusicAndArtistName() {
         displaySongName.setText(mySongs.get(position).getTitle());
         artistName.setText(mySongs.get(position).getArtist());
-        musicImageSetter();
-        displaySongName.setSelected(true);
+    }
 
-        // Setup Media Player and start them
+    private void setMusicImage() {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        Uri u = Uri.parse(mySongs.get(position).getPath());
+        retriever.setDataSource(u.toString());
+        byte[] art = retriever.getEmbeddedPicture();
+        if (art!=null)
+        {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
+            imageView2.setImageBitmap(bitmap);
+        }
+        retriever.release();
+    }
+
+    private void setupNewMediaPlayer() {
         mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
         mediaPlayer.start();
+    }
 
-        //startAnimation(imageView2);
-        imageView2.startAnimation(customAnimation);
-
-        // setting seekbar upper limit and update seekbar
+    private void setseekbarMaxAndUpdateSeekbar() {
         songSeekBar.setMax(mediaPlayer.getDuration());
 
         updateSeekBar = new Thread()
@@ -141,7 +239,6 @@ public class PlayerActivity extends AppCompatActivity
                 while (currentPosition<totalDuration)
                 {
                     try
-
                     {
                         currentPosition = mediaPlayer.getCurrentPosition();
                         songSeekBar.setProgress(currentPosition);
@@ -153,11 +250,10 @@ public class PlayerActivity extends AppCompatActivity
                 }
             }
         };
+        updateSeekBar.start();
 
-        updateSeekBar.start(); // Update Seekbar
-
-        // Setting Seekbar change listener.
-        songSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        songSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (mediaPlayer!=null && fromUser)
@@ -177,173 +273,6 @@ public class PlayerActivity extends AppCompatActivity
             }
         });
 
-        // Setting Start Timing and End Time of Songs
-        setSongTiming();
-
-
-        playPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mediaPlayer.isPlaying())
-                {
-                    imageView2.clearAnimation();
-                    mediaPlayer.pause();
-                    playPause.setImageResource(R.drawable.ic_play);
-
-                }else
-                {
-                    imageView2.startAnimation(customAnimation);
-                    mediaPlayer.start();
-                    playPause.setImageResource(R.drawable.ic_pause);
-                }
-            }
-        });
-
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                next.performClick();
-            }
-        });
-
-
-
-        next.setOnClickListener(v -> {
-            resetMediaplayerSeekbarAndAnimation();
-            imageView2.clearAnimation();
-            if (shuffelBool && !repeatBool){
-                position = getRandom(mySongs.size()-1);
-                musicImageSetter();
-                changeMusicInMediaplayer();
-            }else if (!shuffelBool && !repeatBool){
-                position = ((position + 1) % mySongs.size());
-                musicImageSetter();
-                changeMusicInMediaplayer();
-            }else {
-                musicImageSetter();
-                changeMusicInMediaplayer();
-            }
-        });
-
-        previous.setOnClickListener(v -> {
-            resetMediaplayerSeekbarAndAnimation();
-            if (shuffelBool && !repeatBool){
-                position = getRandom(mySongs.size()-1);
-                musicImageSetter();
-                changeMusicInMediaplayer();
-
-            }else if (!shuffelBool && !repeatBool){
-                position = ((position + 1) % mySongs.size());
-                musicImageSetter();
-                changeMusicInMediaplayer();
-
-            }else {
-                musicImageSetter();
-                changeMusicInMediaplayer();
-
-            }
-        });
-
-        fastForward.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 3000);
-                }
-            }
-        });
-
-        rewind.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                if (mediaPlayer.isPlaying())
-                {
-                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition()-3000);
-                }
-            }
-        });
-
-        equilizerBtn.setOnClickListener(v -> {
-            try {
-                Intent eqIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-                eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
-                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, getPackageName());
-                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.getAudioSessionId());
-                eqIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
-                startActivityForResult(eqIntent, 13);
-                Toast.makeText(PlayerActivity.this, "Presenting Equalizer", Toast.LENGTH_SHORT).show();
-            }catch (Exception e){
-                Toast.makeText(PlayerActivity.this, "Equilizer Not Found", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        shuffel.setOnClickListener(new View.OnClickListener() {
-            //same as repeat, it is created by video help
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View v) {
-                if (shuffelBool){
-                    shuffelBool = false;
-                    shuffel.setBackgroundTintList(ContextCompat.getColorStateList(PlayerActivity.this, R.color.white));
-                }else {
-                    shuffelBool = true;
-                    shuffel.setBackgroundTintList(ContextCompat.getColorStateList(PlayerActivity.this, R.color.RoyleBlue));
-                }
-            }
-        });
-
-
-        repeat.setOnClickListener(v -> {
-            // created by me with youtube video help
-            if (repeatBool){
-                repeatBool = false;
-                repeat.setImageResource(R.drawable.ic_repeat);
-            }else {
-                repeatBool = true;
-                repeat.setImageResource(R.drawable.ic_repeat_one);
-            }
-        });
-
-        // vid prt 6
-        /*
-            favoriteList.setOnClickListener(v -> {
-                // Created By Me with error and try with the help of Stack Overflow
-
-                if (favSongBtn == false){
-                    favSongBtn = true;
-                }else{
-                    favSongBtn= false;
-                }
-            });
-       */
-
-        // Oncreate Ends Here.
-
-
-    }
-
-
-
-
-    private void musicImageSetter() {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        Uri u = Uri.parse(mySongs.get(position).getPath());
-        retriever.setDataSource(u.toString());
-        byte[] art = retriever.getEmbeddedPicture();
-        if (art!=null)
-        {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
-            imageView2.setImageBitmap(bitmap);
-        }
-        retriever.release();
-    }
-
-    private int getRandom(int i) {
-        Random random = new Random();
-        return random.nextInt(i+1);
     }
 
     public void setSongTiming(){
@@ -374,31 +303,106 @@ public class PlayerActivity extends AppCompatActivity
         return time;
     }
 
+    private void activatePlayPauseButton() {
+        playPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mediaPlayer.isPlaying())
+                {
+                    imageView2.clearAnimation();
+                    mediaPlayer.pause();
+                    playPause.setImageResource(R.drawable.ic_play);
+
+                }else
+                {
+                    imageView2.startAnimation(customAnimation);
+                    mediaPlayer.start();
+                    playPause.setImageResource(R.drawable.ic_pause);
+                }
+            }
+        });
+    }
+
+    private void currentSongOver() {
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                next.performClick();
+            }
+        });
+    }
+
+    private void activateNextSongButton() {
+        next.setOnClickListener(v -> {
+            resetMediaplayerSeekbarAndAnimation();
+            if (shuffelBool && !repeatBool){
+                position = getRandom(mySongs.size()-1);
+                setMusicImage();
+                changeMusicInMediaplayer();
+            }else if (!shuffelBool && !repeatBool){
+                position = ((position + 1) % mySongs.size());
+                setMusicImage();
+                changeMusicInMediaplayer();
+            }else {
+                if (repeatBool && !shuffelBool){
+                    setMusicImage();
+                    changeMusicInMediaplayer();
+                }
+            }
+        });
+    }
+
+    private void activatePreviousSongButton() {
+        previous.setOnClickListener(v -> {
+            resetMediaplayerSeekbarAndAnimation();
+            if (shuffelBool && !repeatBool){
+                position = getRandom(mySongs.size()-1);
+                setMusicImage();
+                changeMusicInMediaplayer();
+
+            }else if (!shuffelBool && !repeatBool){
+                position = ((position - 1) % mySongs.size());
+                setMusicImage();
+                changeMusicInMediaplayer();
+
+            }else {
+                setMusicImage();
+                changeMusicInMediaplayer();
+
+            }
+        });
+    }
+
+    public void resetMediaplayerSeekbarAndAnimation() {
+        mediaPlayer.stop();
+        playPause.setImageResource(R.drawable.ic_play);
+        mediaPlayer.release();
+        imageView2.clearAnimation();
+    }
+
+    private int getRandom(int i) {
+        Random random = new Random();
+        return random.nextInt(i+1);
+    }
+
+    public void changeMusicInMediaplayer(){
+        Uri u = Uri.parse(mySongs.get(position).getPath());
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), u);
+        setMusicAndArtistName();
+        songSeekBar.setMax(mediaPlayer.getDuration());
+        displaySongName.setSelected(true);
+        playPause.setImageResource(R.drawable.ic_pause);
+        mediaPlayer.start();
+        imageView2.startAnimation(customAnimation);
+        setSongTiming();
+        imageAnimation();
+    }
+
     public void imageAnimation(){
         if (mediaPlayer.isPlaying()){
             imageView2.startAnimation(customAnimation);
         }else {
             imageView2.clearAnimation();
         }
-    }
-
-    public void resetMediaplayerSeekbarAndAnimation()
-    {
-        mediaPlayer.stop();
-        mediaPlayer.release();
-        imageView2.clearAnimation();
-    }
-    public void changeMusicInMediaplayer()
-    {
-        Uri u = Uri.parse(mySongs.get(position).getPath());
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), u);
-        displaySongName.setText(mySongs.get(position).getTitle());
-        artistName.setText(mySongs.get(position).getArtist());
-        songSeekBar.setMax(mediaPlayer.getDuration());
-        displaySongName.setSelected(true);
-        mediaPlayer.start();
-        imageView2.startAnimation(customAnimation);
-        setSongTiming();
-        imageAnimation();
     }
 }

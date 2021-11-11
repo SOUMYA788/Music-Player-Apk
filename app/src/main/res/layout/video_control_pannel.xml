@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/videoControlPannel"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -92,7 +92,8 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_equalizer" />
+                android:background="@drawable/ic_equalizer"
+                android:backgroundTint="@color/white"/>
 
             <ImageView
                 android:id="@+id/previousVideo"
@@ -100,7 +101,8 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="20dp"
 
-                android:background="@drawable/ic_skip_previous" />
+                android:background="@drawable/ic_skip_previous"
+                android:backgroundTint="@color/white"/>
 
 
             <ImageView
@@ -108,7 +110,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_skip_previous" />
+                android:background="@drawable/ic_skip_previous"
+                android:backgroundTint="@color/white"/>
 
 
             <ImageView
@@ -116,28 +119,32 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
 
-                android:layout_marginEnd="20dp" />
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/white"/>
 
             <ImageView
                 android:id="@+id/videoFastForward"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_fast_forward" />
+                android:background="@drawable/ic_fast_forward"
+                android:backgroundTint="@color/white"/>
 
             <ImageView
                 android:id="@+id/nextVideo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_skip_next" />
+                android:background="@drawable/ic_skip_next"
+                android:backgroundTint="@color/white"/>
 
             <ImageView
                 android:id="@+id/videoRotation"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/ic_screen_rotation" />
+                android:background="@drawable/ic_screen_rotation"
+                android:backgroundTint="@color/white"/>
         </LinearLayout>
 
 

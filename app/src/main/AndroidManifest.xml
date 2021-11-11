@@ -8,25 +8,14 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.MediaPlayer">
-
+        <activity android:name=".PlayerActivity"></activity>
         <activity
             android:name=".VideoPlayerActivity"
-            android:parentActivityName=".MainActivity"
-            android:configChanges="orientation|screenSize">
-
-        </activity>
-
-
-        <activity
-            android:name=".PlayerActivity"
-            android:label="Playing Music"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:configChanges="orientation|screenSize"
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="MUSIC"

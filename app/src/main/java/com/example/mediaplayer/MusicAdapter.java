@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -42,18 +49,30 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.holder> {
         byte[] art = retriever.getEmbeddedPicture();
         if (art!=null)
         {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
-            holder.imageView.setImageBitmap(bitmap);
+            Glide.with(context).asBitmap().load(art).into(holder.imageView);
+            //Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
+            // holder.imageView.setImageBitmap(bitmap);
         }
         retriever.release();
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // Fragment Section (Not Required)
+                //FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
+                //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                //fragmentTransaction.add(R.id.activityMainXML, new PlayerFragment());
+                //fragmentTransaction.addToBackStack(null);
+                //fragmentTransaction.commit();
+
+                //Bundle bundle = new Bundle();
+                //bundle.putInt("position", position);
+                //new PlayerFragment().setArguments(bundle);
+
+                // Intent Section (Required)
                 Intent intent = new Intent(context, PlayerActivity.class);
-                //intent.putExtra("songs", mFiles);
-                // intent.putExtra("songName", songName);
-                intent.putExtra("position", position);
+                intent.putExtra("audioListPosition", position);
                 context.startActivity(intent);
             }
         });
