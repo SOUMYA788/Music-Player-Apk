@@ -25,4 +25,50 @@
         parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+
+
+    <!--Bottom Sheet Style Start Here-->
+    <style name="ThemeOverlay.MaterialComponents.MaterialAlertDialog_Background" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!--Background Color-->
+        <item name="android:background">
+            @color/black_shade_two
+        </item>
+
+        <!--Text color for background and message-->
+        <item name="colorOnSurface">
+            @color/white
+        </item>
+
+        <!--Style For Positive Button-->
+        <item name="buttonBarPositiveButtonStyle">
+            @style/PositiveButonStyle
+        </item>
+    </style>
+
+    <style name="PositiveButonStyle" parent="@style/Widget.MaterialComponents.Button">
+        <!--Text color of the button-->
+        <item name="android:textColor">
+            @color/white
+        </item>
+
+        <!--Background Tint of The Button-->
+        <item name="backgroundTint">
+            @color/green_shade_one
+        </item>
+    </style>
+
+
+
+
+    <style name="NagativeButonStyle" parent="@style/Widget.MaterialComponents.Button">
+        <!--Text color of the button-->
+        <item name="android:textColor">
+            @color/black
+        </item>
+
+        <!--Background Tint of The Button-->
+        <item name="backgroundTint">
+            @color/red_shade_one
+        </item>
+    </style>
 </resources>

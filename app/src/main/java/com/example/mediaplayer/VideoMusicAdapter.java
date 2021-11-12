@@ -2,10 +2,12 @@ package com.example.mediaplayer;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Size;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -63,6 +66,8 @@ public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.Vi
                 bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetTheme);
                 View bottomSheetView = LayoutInflater.from(context).inflate(R.layout.video_bottom_sheet_layout,
                         v.findViewById(R.id.BottomSheet));
+
+                // Option Play
                 bottomSheetView.findViewById(R.id.moreitem_play).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -71,15 +76,16 @@ public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.Vi
                     }
                 });
 
+                // Option Rename: NOT WORKING
                 bottomSheetView.findViewById(R.id.moreitem_rename).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Background);
                         alertDialog.setTitle("Enter New Name...");
                         EditText editText = new EditText(context);
-                        String path = vFiles.get(position).getPath();
+                        String path = vFiles.get(position).getPath();// full path of a file
                         final File file = new File(path);
-                        String videoName= file.getName();
+                        String videoName = file.getName();
 
                         videoName = videoName.substring(0, videoName.lastIndexOf(".")); // 0 to before .ext
                         editText.setText(videoName);
@@ -90,17 +96,18 @@ public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.Vi
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String onlyPath = file.getParentFile().getAbsolutePath();
+
                                 String ext = file.getAbsolutePath();
                                 String extension = ext.substring(ext.lastIndexOf("."));
                                 String newPath = onlyPath + "/" + editText.getText().toString() + extension;
-                                Toast.makeText(context, "New Path"+ newPath, Toast.LENGTH_LONG).show();
+
                                 File newFile = new File(newPath);
                                 boolean rename = file.renameTo(newFile);
-                                Toast.makeText(context, "RENAME:"+rename, Toast.LENGTH_SHORT).show();
-                                if (rename){
+
+                                if (rename) {
                                     ContentResolver resolver = context.getApplicationContext().getContentResolver();
                                     resolver.delete(MediaStore.Files.getContentUri("external"),
-                                            MediaStore.MediaColumns.DATA+"=?", new String[]
+                                            MediaStore.MediaColumns.DATA + "=?", new String[]
                                                     {file.getAbsolutePath()});
                                     Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                                     intent.setData(Uri.fromFile(newFile));
@@ -110,7 +117,7 @@ public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.Vi
                                     Toast.makeText(context, "DONE...", Toast.LENGTH_SHORT).show();
                                     SystemClock.sleep(200);
                                     ((Activity) context).recreate();
-                                }else {
+                                } else {
                                     Toast.makeText(context, "SORRY!", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -125,6 +132,106 @@ public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.Vi
                         bottomSheetDialog.dismiss();
                     }
                 });
+
+                // Option Share
+                bottomSheetView.findViewById(R.id.moreitem_share).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Uri uri = Uri.parse(vFiles.get(position).getPath());
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.setType("Video/*");
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                        context.startActivity(Intent.createChooser(shareIntent, "You Can Share Via"));
+                        bottomSheetDialog.dismiss();
+                    }
+
+                });
+
+                // Option Delete: NOT WORKING
+                bottomSheetView.findViewById(R.id.moreitem_delete).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context,R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Background);
+                        alertDialog.setTitle("DELETE");
+                        alertDialog.setMessage("DO YOU WANT TO DELETE THIS VIDEO?");
+                        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Uri contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                        vFiles.get(position).getID());
+
+                                File file = new File(vFiles.get(position).getPath());
+                                boolean delete = file.delete();
+                                if (delete) {
+                                    context.getContentResolver().delete(contentUri, null, null);
+                                    vFiles.remove(position);
+                                    notifyItemRemoved(position);
+                                    notifyItemRangeChanged(position, vFiles.size());
+                                    Toast.makeText(context, "VIDEO DELETED", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "VIDEO CANNOT BE DELETED", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+                        alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        alertDialog.show();
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
+                // Option Properties
+                bottomSheetView.findViewById(R.id.moreitem_property).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context,R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Background);
+                        alertDialog.setTitle("PROPERTIES");
+
+                        // Workings for File Data Element
+                        String path = vFiles.get(position).getPath();
+                        String namePlusFormat = vFiles.get(position).getTitle();
+
+                        int indexOfPath = path.lastIndexOf("/");
+                        int size = vFiles.get(position).getSize();
+
+                        int formatIndex = path.lastIndexOf(".");
+                        String onlyFormat = path.substring(formatIndex + 1);
+
+                        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                        retriever.setDataSource(path);
+                        String videoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+                        String videoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+
+
+                        // File Data Element
+                        String fileName = "FILE: " + namePlusFormat;
+                        String filePath = "PATH: " + path.substring(0, indexOfPath);
+                        String fileSize = "SIZE: " + android.text.format.Formatter.formatFileSize(context, size);
+                        String fileLength = "LENGTH: " + createVideoTiming(vFiles.get(position).getDuration());
+                        String fileFormat = "FORMAT: " + onlyFormat;
+                        String fileResolution = "RESOLUTION: " + videoWidth + " X " + videoHeight;
+
+                        // File Data
+                        String videoInfo = fileName+"\n\n"+filePath+"\n\n"+fileSize+"\n\n"+fileLength+"\n\n"+fileFormat+"\n\n"+fileResolution;
+
+                        alertDialog.setMessage(videoInfo);
+                        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        alertDialog.show();
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
 
                 bottomSheetDialog.setContentView(bottomSheetView);
                 bottomSheetDialog.show();
@@ -149,11 +256,26 @@ public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.Vi
     public class VideoHolder extends RecyclerView.ViewHolder {
         ImageView videoImage, video_menu_more;
         TextView txtVideoSongName, video_size;
+
         public VideoHolder(@NonNull View itemView) {
             super(itemView);
             videoImage = itemView.findViewById(R.id.videoimg);
             txtVideoSongName = itemView.findViewById(R.id.txtVideoSongName);
             video_menu_more = itemView.findViewById(R.id.video_menu_more);
+            video_size = itemView.findViewById(R.id.video_size);
         }
+    }
+
+    public String createVideoTiming(int duration) {
+        // Used in setSongTiming
+        String time = "";
+        int min = duration / 1000 / 60;
+        int sec = duration / 1000 % 60;
+        time += min + ":";
+        if (sec < 10) {
+            time += "0";
+        }
+        time += sec;
+        return time;
     }
 }

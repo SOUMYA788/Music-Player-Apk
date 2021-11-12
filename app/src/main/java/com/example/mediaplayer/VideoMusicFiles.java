@@ -1,17 +1,29 @@
 package com.example.mediaplayer;
 
 public class VideoMusicFiles {
+    private int ID;
     private String path;
     private String title;
-    private String duration;
+    private int duration;
+    private int size;
 
-    public VideoMusicFiles(String path, String title, String duration) {
+    public VideoMusicFiles(int ID, String path, String title, int duration, int size) {
+        this.ID = ID;
         this.path = path;
         this.title = title;
         this.duration = duration;
+        this.size = size;
     }
 
     public VideoMusicFiles() {
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getPath() {
@@ -30,11 +42,19 @@ public class VideoMusicFiles {
         this.title = title;
     }
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 }

@@ -14,6 +14,6 @@
     <string name="folders">FOLDERS</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="equilizer_description">Control Equilizer</string>
+    <string name="equilizer_description">Control Equalizer</string>
     <string name="this_is_song_name">this is song name</string>
 </resources>

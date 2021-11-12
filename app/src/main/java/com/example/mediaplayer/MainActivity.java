@@ -3,7 +3,10 @@ package com.example.mediaplayer;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -12,12 +15,16 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.google.android.material.tabs.TabLayout;
@@ -35,7 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
     static ArrayList<MusicFiles> musicFiles;// Use in runtime permission, for collecting all songs in one array list.
     static ArrayList<VideoMusicFiles> videoMusicFiles;
-    String[] items;
+    //String[] items;
+    public static final int REQUEST_PERMISSION_SETTING = 12;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,17 +52,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         runtimePermission();
     }
 
+
+
+
     public void runtimePermission()
     {
-        Dexter.withContext(this).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+        Dexter.withContext(this).withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .withListener(new PermissionListener() {
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-
                         musicFiles = getAllAudio(MainActivity.this);
                         videoMusicFiles = getAllVideo(MainActivity.this);
                         initViewPager();
@@ -61,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-
                     }
 
                     @Override
@@ -156,18 +167,22 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<VideoMusicFiles> tempVideoList = new ArrayList<>();
         Uri uri  = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
-                MediaStore.Audio.Media.DATA, // For Path
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.DURATION
+                MediaStore.Video.Media._ID,
+                MediaStore.Video.Media.DATA, // For Path
+                MediaStore.Video.Media.TITLE,
+                MediaStore.Video.Media.DURATION,
+                MediaStore.Video.Media.SIZE
         };
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
         if (cursor!=null){
             while (cursor.moveToNext()){
-                String path  = cursor.getString(0);
-                String title  = cursor.getString(1);
-                String duration  = cursor.getString(2);
+                int id = cursor.getInt(0);
+                String path  = cursor.getString(1);
+                String title  = cursor.getString(2);
+                int duration  = Integer.parseInt(cursor.getString(3));
+                int size = cursor.getInt(4);
 
-                VideoMusicFiles videoMusicFiles = new VideoMusicFiles(path, title, duration);
+                VideoMusicFiles videoMusicFiles = new VideoMusicFiles(id, path, title, duration, size);
                 tempVideoList.add(videoMusicFiles);
             }
             cursor.close();
