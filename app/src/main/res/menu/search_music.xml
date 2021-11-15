@@ -8,4 +8,16 @@
         android:title="Search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/refreshMusic"
+        android:icon="@drawable/ic_refresh"
+        android:title="Refresh"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/musicSortBy"
+        android:icon="@drawable/ic_sort"
+        android:title="Sort By"
+        app:showAsAction="never" />
 </menu>

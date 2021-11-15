@@ -31,7 +31,7 @@
                 android:background="@color/listColor"
                 app:tabIndicatorFullWidth="false"
                 app:tabTextColor="@color/listTabItemColor"
-                app:tabIndicatorColor="@color/listTabItemColor"/>
+                app:tabIndicatorColor="@color/listTabItemColor" />
 
         </LinearLayout>
 

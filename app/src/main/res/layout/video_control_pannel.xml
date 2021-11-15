@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:padding="15dp"
         android:paddingBottom="15dp"
         android:gravity="center"
         android:orientation="vertical"
@@ -80,72 +81,137 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/videoBtnSetTwo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/videoEquilizer"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_equalizer"
-                android:backgroundTint="@color/white"/>
 
             <ImageView
                 android:id="@+id/previousVideo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="20dp"
 
+                android:layout_gravity="center"
                 android:background="@drawable/ic_skip_previous"
-                android:backgroundTint="@color/white"/>
+                android:backgroundTint="@color/white"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/videoRewind"/>
 
 
             <ImageView
                 android:id="@+id/videoRewind"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="20dp"
+
+                android:layout_gravity="center"
                 android:background="@drawable/ic_skip_previous"
-                android:backgroundTint="@color/white"/>
+                android:backgroundTint="@color/white"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/previousVideo"
+                app:layout_constraintEnd_toStartOf="@id/videoPlayPause"/>
 
 
             <ImageView
                 android:id="@+id/videoPlayPause"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/white"
 
-                android:layout_marginEnd="20dp"
-                android:backgroundTint="@color/white"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/videoRewind"
+                app:layout_constraintEnd_toStartOf="@id/videoFastForward"/>
 
             <ImageView
                 android:id="@+id/videoFastForward"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="20dp"
+                android:layout_gravity="center"
                 android:background="@drawable/ic_fast_forward"
-                android:backgroundTint="@color/white"/>
+                android:backgroundTint="@color/white"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/videoPlayPause"
+                app:layout_constraintEnd_toStartOf="@id/nextVideo"/>
+
 
             <ImageView
                 android:id="@+id/nextVideo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="20dp"
+                android:layout_gravity="center"
                 android:background="@drawable/ic_skip_next"
-                android:backgroundTint="@color/white"/>
+                android:backgroundTint="@color/white"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/videoFastForward"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/videoLock"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+
+                android:layout_gravity="center"
+                android:background="@drawable/ic_lock"
+                android:backgroundTint="@color/white"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/videoEquilizer"/>
+
+            <ImageView
+                android:id="@+id/videoEquilizer"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+
+                android:layout_gravity="center"
+                android:background="@drawable/ic_equalizer"
+                android:backgroundTint="@color/white"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/videoLock"
+                app:layout_constraintEnd_toEndOf="@id/videoRotation"/>
 
             <ImageView
                 android:id="@+id/videoRotation"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
+                android:layout_gravity="center"
                 android:background="@drawable/ic_screen_rotation"
-                android:backgroundTint="@color/white"/>
-        </LinearLayout>
+                android:backgroundTint="@color/white"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/videoEquilizer"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </LinearLayout>

@@ -97,7 +97,13 @@ public class PlayerActivity extends AppCompatActivity {
 
         setSongTiming();
 
-        // Activating Buttons
+        activatingAudioConsole();
+
+
+        // ON CREATE METHOD ends here
+    }
+
+    private void activatingAudioConsole() {
         activatePlayPauseButton();
         currentSongOver();
         activateNextSongButton();
@@ -107,9 +113,6 @@ public class PlayerActivity extends AppCompatActivity {
         activatingEqualizer();
         activatingSongSuffelButton();
         activatingRepeatButton();
-        // Favorite Music List
-
-        // ON CREATE METHOD ends here
     }
 
     // Define View Elements on XML file

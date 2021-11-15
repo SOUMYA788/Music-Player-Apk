@@ -31,7 +31,7 @@
     <style name="ThemeOverlay.MaterialComponents.MaterialAlertDialog_Background" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <!--Background Color-->
         <item name="android:background">
-            @color/black_shade_two
+            @color/black
         </item>
 
         <!--Text color for background and message-->

@@ -23,11 +23,7 @@
             android:layout_gravity="center"
             android:background="@drawable/cd_img"
             android:contentDescription="@string/Music_Image_View" />
-
     </LinearLayout>
-
-
-
 
     <LinearLayout
         android:id="@+id/setOne"
@@ -37,6 +33,7 @@
         android:orientation="horizontal"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,8 +45,8 @@
             android:layout_height="40dp"
             android:background="@drawable/ic_equalizer"
             android:backgroundTint="@color/white"
-            android:contentDescription="@string/equilizer" />
-
+            android:contentDescription="@string/equilizer"
+            android:layout_marginEnd="5dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,16 +88,22 @@
 
         </LinearLayout>
 
-
-
         <ToggleButton
             android:id="@+id/favoriteList"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:textSize="0sp"
-            android:background="@drawable/ic_favorite" />
-    </LinearLayout>
+            android:visibility="gone"
+            android:background="@drawable/ic_favorite"
 
+            android:layout_marginStart="5dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/next"
+
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/setTwo"
@@ -150,116 +153,128 @@
             tools:ignore="HardcodedText,TextViewEdits" />
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/setThree"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setTwo"
-        app:layout_constraintVertical_bias="0.141">
+        app:layout_constraintTop_toBottomOf="@id/setTwo"
+        app:layout_constraintVertical_bias="0.0">
 
-        <ImageView
-            android:id="@+id/shuffel"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="0"
-            android:background="@drawable/ic_shuffle"
-            android:backgroundTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/setThree"
-            app:layout_constraintEnd_toStartOf="@id/previous"
-            app:layout_constraintStart_toStartOf="@id/setThree"
-            app:layout_constraintTop_toTopOf="@id/setThree"
-            android:contentDescription="TODO"
-            tools:ignore="ContentDescription,HardcodedText" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/setThree"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
 
-        <ImageView
-            android:id="@+id/previous"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_weight="0"
-            android:background="@drawable/ic_skip_previous"
-            android:backgroundTint="@color/white"
-            android:contentDescription="TODO"
-            app:layout_constraintBottom_toBottomOf="@id/setThree"
-            app:layout_constraintEnd_toStartOf="@id/rewind"
-            app:layout_constraintStart_toEndOf="@id/shuffel"
-            app:layout_constraintTop_toTopOf="@id/setThree"
-            tools:ignore="ContentDescription,HardcodedText" />
+            <ImageView
+                android:id="@+id/shuffel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_shuffle"
+                android:backgroundTint="@color/white"
 
-        <ImageView
-            android:id="@+id/rewind"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:background="@drawable/ic_fast_rewind"
-            android:backgroundTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/setThree"
-            app:layout_constraintEnd_toStartOf="@id/playPause"
-            app:layout_constraintStart_toEndOf="@id/previous"
-            app:layout_constraintTop_toTopOf="@id/setThree"
-            android:contentDescription="TODO"
-            tools:ignore="ContentDescription,HardcodedText" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/previous"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/playPause"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:backgroundTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/setThree"
-            app:layout_constraintEnd_toStartOf="@id/next"
-            app:layout_constraintStart_toEndOf="@id/previous"
-            app:layout_constraintTop_toTopOf="@id/setThree"
-            app:layout_constraintVertical_bias="0.324"
-            android:contentDescription="@string/play_pause" />
+            <ImageView
+                android:id="@+id/previous"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/ic_skip_previous"
+                android:backgroundTint="@color/white"
+                android:contentDescription="TODO"
 
-        <ImageView
-            android:id="@+id/fastForward"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:background="@drawable/ic_fast_forward"
-            android:backgroundTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/next"
-            app:layout_constraintStart_toEndOf="@id/playPause"
-            app:layout_constraintTop_toTopOf="@id/setThree"
-            android:contentDescription="@string/fast_forward" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/rewind"
+                app:layout_constraintStart_toEndOf="@id/shuffel"
+                app:layout_constraintTop_toTopOf="parent"
 
+                tools:ignore="ContentDescription,HardcodedText" />
 
-        <ImageView
-            android:id="@+id/next"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_weight="0"
-            android:background="@drawable/ic_skip_next"
-            android:backgroundTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/setThree"
-            app:layout_constraintEnd_toStartOf="@id/repeat"
-            app:layout_constraintStart_toEndOf="@id/fastForward"
-            app:layout_constraintTop_toTopOf="@id/setThree"
-            android:contentDescription="@string/next" />
+            <ImageView
+                android:id="@+id/rewind"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/ic_fast_rewind"
+                android:backgroundTint="@color/white"
+
+                android:contentDescription="TODO"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/playPause"
+                app:layout_constraintStart_toEndOf="@id/previous"
+
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription,HardcodedText" />
+
+            <ImageView
+                android:id="@+id/playPause"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:backgroundTint="@color/white"
+
+                android:contentDescription="@string/play_pause"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/fastForward"
+                app:layout_constraintStart_toEndOf="@id/rewind"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.324" />
+
+            <ImageView
+                android:id="@+id/fastForward"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/ic_fast_forward"
+                android:backgroundTint="@color/white"
+
+                android:contentDescription="@string/fast_forward"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/next"
+                app:layout_constraintStart_toEndOf="@id/playPause"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-        <ImageView
-            android:id="@+id/repeat"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_repeat"
-            android:backgroundTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/setThree"
-            app:layout_constraintEnd_toEndOf="@id/setThree"
-            app:layout_constraintHorizontal_bias="0.818"
-            app:layout_constraintStart_toEndOf="@id/fastForward"
-            app:layout_constraintTop_toTopOf="@id/setThree"
-            app:tint="@color/white"
-            android:contentDescription="@string/repeat" />
+            <ImageView
+                android:id="@+id/next"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_weight="0"
+                android:background="@drawable/ic_skip_next"
+                android:backgroundTint="@color/white"
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                android:contentDescription="@string/next"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/repeat"
+                app:layout_constraintStart_toEndOf="@id/fastForward"
 
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/repeat"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_repeat"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/repeat"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/next"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

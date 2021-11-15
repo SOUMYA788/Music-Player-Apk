@@ -2,6 +2,7 @@ package com.example.mediaplayer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
@@ -27,7 +28,7 @@ import static com.example.mediaplayer.MainActivity.videoMusicFiles;
 public class VideoPlayerActivity extends AppCompatActivity {
     int position, orientation;
     TextView songNameTextView, videoStartTime, videoEndTime;
-    ImageView videoPlayPause, videoEquilizer, previousVideo,videoRewind, nextVideo,videoFastForward, videoRotation;
+    ImageView videoPlayPause, videoEquilizer, previousVideo,videoRewind, nextVideo,videoFastForward, videoRotation, videoLock, videoUnlock;
     SeekBar videoSeekBar;
     ArrayList<VideoMusicFiles>myVideoSongs;
     Uri VideoUri;
@@ -35,7 +36,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
     Thread updateSeekbarPosition;
     RelativeLayout videoControlPannel, videoViewRelativeLayout;
-    Boolean isOpen = true;
+    Boolean isOpen = true, isVideoLock = false;
 
     // Created Objects
 
@@ -46,9 +47,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_video_player);
 
-
         // Dealers XML File View here.
         xmlFileView();
+        videoUnlock.setVisibility(View.GONE);
 
         myVideoSongs = videoMusicFiles;
 
@@ -77,96 +78,140 @@ public class VideoPlayerActivity extends AppCompatActivity {
         player = findViewById(R.id.videoPlayer);
         videoControlPannel = findViewById(R.id.videoControlPannel);
         videoViewRelativeLayout = findViewById(R.id.videoViewRelativeLayout);
+        videoLock = findViewById(R.id.videoLock);
+        videoUnlock = findViewById(R.id.videoUnlock);
     }
 
     private void activatingControlPanel() {
         // Video Control Panel
-        videoPlayPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (player.isPlaying()){
-                    player.pause();
-                    videoPlayPause.setImageResource(R.drawable.ic_play);
-                }else {
-                    player.start();
-                    videoPlayPause.setImageResource(R.drawable.ic_pause);
-                }
+        videoPlayPause.setOnClickListener(v -> {
+            if (player.isPlaying()){
+                player.pause();
+                videoPlayPause.setImageResource(R.drawable.ic_play);
+            }else {
+                player.start();
+                videoPlayPause.setImageResource(R.drawable.ic_pause);
+            }
+        });
 
-            }
-        });
-        nextVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                player.pause();
+        nextVideo.setOnClickListener(v -> {
+            try {
+                pausePlayer();
                 position = ((position + 1) % myVideoSongs.size());
+
                 videoSeekBar.setProgress(0);
                 VideoUri = Uri.parse(myVideoSongs.get(position).getPath());
                 player.setVideoURI(VideoUri);
                 player.start();
+                videoPlayPause.setImageResource(R.drawable.ic_pause);
+
+            } catch (Exception e) {
+                Toast.makeText(VideoPlayerActivity.this, "NOT AVAILABLE!", Toast.LENGTH_SHORT).show();
             }
         });
-        videoFastForward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+        videoFastForward.setOnClickListener(v -> {
+            try {
                 player.seekTo(player.getCurrentPosition()+5000);
+            } catch (Exception e) {
+                Toast.makeText(VideoPlayerActivity.this, "VIDEO COMPLETE", Toast.LENGTH_SHORT).show();
             }
         });
-        previousVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                player.pause();
-                position = ((position - 1) % myVideoSongs.size());
-                videoSeekBar.setProgress(0);
-                VideoUri = Uri.parse(myVideoSongs.get(position).getPath());
-                player.setVideoURI(VideoUri);
-                player.start();
-            }
+
+        previousVideo.setOnClickListener(v -> {
+            pausePlayer();
+            position = ((position - 1) % myVideoSongs.size());
+            changeMusic();
         });
-        videoRewind.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+        videoRewind.setOnClickListener(v -> {
+            try {
                 player.seekTo(player.getCurrentPosition()-1000);
+            } catch (Exception e) {
+                Toast.makeText(VideoPlayerActivity.this, "REACHED ON STARTING POINT", Toast.LENGTH_SHORT).show();
             }
         });
-        videoEquilizer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent eqIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
-                    eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
-                    eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, getPackageName());
-                    eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.getAudioSessionId());
-                    eqIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
-                    startActivityForResult(eqIntent, 13);
-                    Toast.makeText(getApplicationContext(), "Presenting Equalizer", Toast.LENGTH_SHORT).show();
-                }catch (Exception e){
-                    Toast.makeText(getApplicationContext(), "Equilizer Not Found", Toast.LENGTH_SHORT).show();
-                }
+
+        videoEquilizer.setOnClickListener(v -> {
+            try {
+                Intent eqIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
+                eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
+                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, getPackageName());
+                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.getAudioSessionId());
+                eqIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
+                startActivityForResult(eqIntent, 13);
+                Toast.makeText(getApplicationContext(), "Presenting Equalizer", Toast.LENGTH_SHORT).show();
+            }catch (Exception e){
+                Toast.makeText(VideoPlayerActivity.this, "Equalizer Not Found", Toast.LENGTH_SHORT).show();
             }
         });
-        videoRotation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+        videoRotation.setOnClickListener(v -> {
+
+            try {
                 if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
                 {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 }else{
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
+            } catch (Exception e) {
+                Toast.makeText(VideoPlayerActivity.this, "ROTATION IS NOT POSSIBLE.", Toast.LENGTH_SHORT).show();
             }
+
         });
-        videoViewRelativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isOpen){
-                    hideControlPanel();
-                    isOpen = false;
-                }else {
-                    showControlPanel();
-                    isOpen = true;
+
+        videoViewRelativeLayout.setOnClickListener(v -> {
+            if (!isVideoLock){
+                try {
+                    if (isOpen){
+                        hideControlPanel();
+                    }else {
+                        showControlPanel();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            }else{
+                hideControlPanel();
+            }
+
+        });
+
+        videoUnlock.setOnClickListener(v -> {
+            if (isVideoLock){
+                if (videoUnlock.getVisibility() == View.VISIBLE){
+                    videoUnlock.setVisibility(View.GONE);
+                }
+                isVideoLock = false;
+                showControlPanel();
             }
         });
+
+        videoLock.setOnClickListener(v -> {
+            if (!isVideoLock){
+                if (videoUnlock.getVisibility() == View.GONE){
+                    videoUnlock.setVisibility(View.VISIBLE);
+                }
+                isVideoLock = true;
+                hideControlPanel();
+            }
+        });
+    }
+
+    // Changing Music
+    private void changeMusic() {
+        videoSeekBar.setProgress(0);
+        VideoUri = Uri.parse(myVideoSongs.get(position).getPath());
+        player.setVideoURI(VideoUri);
+        player.start();
+        videoPlayPause.setImageResource(R.drawable.ic_pause);
+    }
+
+    // Pausing Player when change music on console
+    private void pausePlayer() {
+        player.pause();
+        videoPlayPause.setImageResource(R.drawable.ic_play);
     }
 
     private void playInitialVideo(){
@@ -175,56 +220,53 @@ public class VideoPlayerActivity extends AppCompatActivity {
         player.setVideoURI(VideoUri);
 
         // On Prepared Listener
-        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                videoSeekBar.setProgress(0);
-                videoSeekBar.setMax(player.getDuration());
-                player.start();
+        player.setOnPreparedListener(mp -> {
+            videoSeekBar.setProgress(0);
+            videoSeekBar.setMax(player.getDuration());
+            player.start();
 
-                // SEEK BAR
-                updateSeekbarPosition = new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            while (player.getDuration()>0) {
-                                videoSeekBar.setProgress(player.getCurrentPosition());
-                                sleep(500);
-                            }
-                        }
-                        catch (InterruptedException e) {
-                            e.printStackTrace();
+            // SEEK BAR
+            updateSeekbarPosition = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        while (player.getDuration()>0) {
+                            videoSeekBar.setProgress(player.getCurrentPosition());
+                            sleep(500);
                         }
                     }
-                };
-                updateSeekbarPosition.start();
-
-                // When User Change Seekbar Position
-                videoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        if (fromUser && player!=null)
-                        {
-                            player.seekTo(progress);
-                        }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+                }
+            };
+            updateSeekbarPosition.start();
 
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
+            // When User Change Seekbar Position
+            videoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    if (fromUser && player!=null)
+                    {
+                        player.seekTo(progress);
                     }
+                }
 
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                        player.seekTo(videoSeekBar.getProgress());
-                    }
-                });
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
 
-                // Setting Video timing and video song name
-                songNameTextView.setText(myVideoSongs.get(position).getTitle());
-                videoEndTime.setText(createVideoTiming(player.getDuration()));
-                setVideoSongTiming();
-            }
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    player.seekTo(videoSeekBar.getProgress());
+                }
+            });
+
+            // Setting Video timing and video song name
+            songNameTextView.setText(myVideoSongs.get(position).getTitle());
+            videoEndTime.setText(createVideoTiming(player.getDuration()));
+            setVideoSongTiming();
         });
 
         // On Completion Listener
@@ -246,26 +288,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         }
         //window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-
-        /*
-        View decorView = window.getDecorView();
-        if (decorView!=null)
-        {
-            int uiOptions = decorView.getSystemUiVisibility();
-            if (Build.VERSION.SDK_INT >= 14){
-                uiOptions &= ~View.SYSTEM_UI_FLAG_LOW_PROFILE;
-            }
-            if (Build.VERSION.SDK_INT >= 16){
-                uiOptions &= ~View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-            }
-            if (Build.VERSION.SDK_INT >= 19){
-                uiOptions &= ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            }
-            decorView.setSystemUiVisibility(uiOptions);
-        }
-
-         */
-
+        isOpen = true;
     }
     private void hideControlPanel() {
 
@@ -278,25 +301,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        /*
-        View decorView = window.getDecorView();
-        if (decorView!=null)
-        {
-            int uiOptions = decorView.getSystemUiVisibility();
-            if (Build.VERSION.SDK_INT>=14){
-                uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
-            }
-            if (Build.VERSION.SDK_INT>=16){
-                uiOptions |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-            }
-            if (Build.VERSION.SDK_INT>=19){
-                uiOptions |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            }
-            decorView.setSystemUiVisibility(uiOptions);
-        }
-        */
-
-
+        isOpen = false;
 
     }
 

@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.zip.Inflater;
 
 public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.VideoHolder> {
@@ -95,7 +97,13 @@ public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.Vi
                         alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String onlyPath = file.getParentFile().getAbsolutePath();
+                                
+                                if (TextUtils.isEmpty(editText.getText().toString())){
+                                    Toast.makeText(context, "Cannot Rename Empty File", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                
+                                String onlyPath = Objects.requireNonNull(file.getParentFile()).getAbsolutePath();
 
                                 String ext = file.getAbsolutePath();
                                 String extension = ext.substring(ext.lastIndexOf("."));
@@ -277,5 +285,11 @@ public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.Vi
         }
         time += sec;
         return time;
+    }
+
+    void updateVideoFiles(ArrayList<VideoMusicFiles> files){
+        vFiles = new ArrayList<>();
+        vFiles.addAll(files);
+        notifyDataSetChanged();
     }
 }
