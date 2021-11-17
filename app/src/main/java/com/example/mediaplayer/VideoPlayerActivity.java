@@ -98,13 +98,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
             try {
                 pausePlayer();
                 position = ((position + 1) % myVideoSongs.size());
-
-                videoSeekBar.setProgress(0);
-                VideoUri = Uri.parse(myVideoSongs.get(position).getPath());
-                player.setVideoURI(VideoUri);
-                player.start();
-                videoPlayPause.setImageResource(R.drawable.ic_pause);
-
+                changeMusic();
             } catch (Exception e) {
                 Toast.makeText(VideoPlayerActivity.this, "NOT AVAILABLE!", Toast.LENGTH_SHORT).show();
             }

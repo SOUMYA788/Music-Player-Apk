@@ -389,6 +389,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     public void changeMusicInMediaplayer(){
+        songSeekBar.setProgress(0);
         Uri u = Uri.parse(mySongs.get(position).getPath());
         mediaPlayer = MediaPlayer.create(getApplicationContext(), u);
         setMusicAndArtistName();
