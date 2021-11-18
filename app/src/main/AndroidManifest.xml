@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MediaPlayer">
 
-        <activity android:name=".PlayerActivity"/>
+        <activity android:name=".PlayerActivity"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".VideoPlayerActivity"

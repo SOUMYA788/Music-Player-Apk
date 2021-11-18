@@ -105,8 +105,8 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void activatingAudioConsole() {
         activatePlayPauseButton();
-        currentSongOver();
         activateNextSongButton();
+        currentSongOver();
         activatePreviousSongButton();
         activateFastForwardButton();
         activateRewindButton();
