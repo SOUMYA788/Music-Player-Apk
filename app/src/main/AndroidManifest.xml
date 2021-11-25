@@ -35,6 +35,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".MusicService"
+            android:enabled="true"/>
+
+        <receiver android:name=".NotificationReceiver" android:enabled="true">
+            <intent-filter>
+                <action android:name="ACTION_NEXT"/>
+                <action android:name="ACTION_PREVIOUS"/>
+                <action android:name="ACTION_PLAY"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

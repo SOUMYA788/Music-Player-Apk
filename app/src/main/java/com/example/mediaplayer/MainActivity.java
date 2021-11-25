@@ -119,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
     public void runtimePermission()
     {
         Dexter.withContext(this).withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)

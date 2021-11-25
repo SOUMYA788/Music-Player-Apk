@@ -1,6 +1,9 @@
 package com.example.mediaplayer;
 
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +20,7 @@ import static com.example.mediaplayer.MainActivity.musicFiles;
 public class SongsListFragment extends Fragment {
     RecyclerView musicListRecyclerView;
     MusicAdapter musicAdapter;
+    NotificationManager notificationManager;
 
     public SongsListFragment() {
         // Required empty public constructor
