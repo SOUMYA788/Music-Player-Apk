@@ -6,7 +6,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -17,14 +16,12 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.audiofx.AudioEffect;
-import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -74,7 +71,6 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     MediaSessionCompat mediaSession;
 
     //NotificationManager notificationManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -345,10 +341,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     }
 
     private void activatePreviousSongButton() {
-        previous.setOnClickListener(v -> {
-            previousButtonClicked();
-
-        });
+        previous.setOnClickListener(v -> previousButtonClicked());
     }
 
     public void resetMediaplayerSeekbarAndAnimation() {
@@ -401,12 +394,11 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     @Override
     public void onServiceDisconnected(ComponentName name) {
         musicService = null;
-        Log.e("Disconnected", musicService + "");
-
     }
 
-    public void showNotification(int playPauseBtn) {
+    public void showNotification(int playPauseSign) {
         Intent intent = new Intent(this, PlayerActivity.class);
+        intent.setAction(Intent.ACTION_MAIN);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         // Previous Intent
@@ -432,17 +424,17 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
                 .setContentTitle(mySongs.get(position).getTitle())
                 .setContentText(mySongs.get(position).getArtist())
                 .addAction(R.drawable.ic_skip_previous, "Previous", prevPendingIntent)
-                .addAction(playPauseBtn, "Play", playPendingIntent)
+                .addAction(playPauseSign, "Play", playPendingIntent)
                 .addAction(R.drawable.ic_skip_next, "Next", nextPendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSession.getSessionToken()))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(contentIntent)
                 .setOnlyAlertOnce(true)
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, notification);
-    }
 
+
+    }
 
     // Button Functions
     @Override

@@ -30,7 +30,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                     intent1.putExtra("myActionName", intent.getAction());
                     context.startService(intent1);
                     break;
-
             }
         }
     }

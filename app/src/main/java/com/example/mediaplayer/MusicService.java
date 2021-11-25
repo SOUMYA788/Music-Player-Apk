@@ -55,7 +55,8 @@ public class MusicService extends Service {
         }
         return START_STICKY;
     }
-    public void buttonCallBack(ButtonAction buttonAction){
+
+    public void buttonCallBack(ButtonAction buttonAction) {
         this.buttonAction = buttonAction;
     }
 }
