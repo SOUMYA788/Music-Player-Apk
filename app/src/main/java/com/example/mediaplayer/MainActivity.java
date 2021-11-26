@@ -26,6 +26,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.karumi.dexter.Dexter;
@@ -40,15 +45,14 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    static ArrayList<MusicFiles> musicFiles;// Use in runtime permission, for collecting all songs in one array list.
+    static ArrayList<MusicFiles> musicFiles; // Use in runtime permission, for collecting all songs in one array list.
     static ArrayList<VideoMusicFiles> videoMusicFiles;
     //String[] items;
     public static final int REQUEST_PERMISSION_SETTING = 12, STORAGE_PERMISSION = 1;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -117,10 +121,7 @@ public class MainActivity extends AppCompatActivity {
         initViewPager();
     }
 
-
-
-    public void runtimePermission()
-    {
+    public void runtimePermission() {
         Dexter.withContext(this).withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .withListener(new PermissionListener() {
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -142,9 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 }).check();
     }
 
-
-    private void initViewPager()
-    {
+    private void initViewPager() {
         ViewPager musicListViewPager = findViewById(R.id.musicListViewPager);
         TabLayout musicListMenuTabLayout = findViewById(R.id.musicListMenuTabLayout);
 
@@ -156,21 +155,18 @@ public class MainActivity extends AppCompatActivity {
         musicListMenuTabLayout.setupWithViewPager(musicListViewPager);
     }
 
-    public static class viewPagerAdapter extends FragmentStatePagerAdapter
-    {
+    public static class viewPagerAdapter extends FragmentStatePagerAdapter {
 
         private ArrayList<Fragment> fragments;
         private ArrayList<String> titles;
 
-        public viewPagerAdapter(@NonNull FragmentManager fm)
-        {
+        public viewPagerAdapter(@NonNull FragmentManager fm) {
             super(fm);
             this.fragments = new ArrayList<>();
             this.titles = new ArrayList<>();
         }
 
-        void addFragments(Fragment fragment, String title)
-        {
+        void addFragments(Fragment fragment, String title) {
             fragments.add(fragment);
             titles.add(title);
         }
@@ -256,5 +252,32 @@ public class MainActivity extends AppCompatActivity {
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
             startCollectMusic();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_music, menu);
+        MenuItem menuItem = menu.findItem(R.id.searchMusic);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                String userInput = newText.toLowerCase();
+                ArrayList<MusicFiles> myFiles = new ArrayList<>();
+                for (MusicFiles song: musicFiles){
+                    if (song.getTitle().toLowerCase().contains(userInput)){
+                        myFiles.add(song);
+                    }
+                }
+                SongsListFragment.musicAdapter.updateAudioList(myFiles);
+                return true;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 }

@@ -26,11 +26,11 @@ import java.util.ArrayList;
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.holder> {
 
     private Context context;
-    private ArrayList<MusicFiles> mFiles;
+    static ArrayList<MusicFiles> audioMusicFiles;
 
-    public MusicAdapter(Context context, ArrayList<MusicFiles> mFiles) {
+    public MusicAdapter(Context context, ArrayList<MusicFiles> audioMusicFiles) {
         this.context = context;
-        this.mFiles = mFiles;
+        this.audioMusicFiles = audioMusicFiles;
     }
 
     @NonNull
@@ -42,16 +42,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.holder> {
 
     @Override
     public void onBindViewHolder(@NonNull holder holder, int position) {
-        holder.indSngNme.setText(mFiles.get(position).getTitle());
+        holder.indSngNme.setText(audioMusicFiles.get(position).getTitle());
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(mFiles.get(position).getPath());
+        retriever.setDataSource(audioMusicFiles.get(position).getPath());
         byte[] art = retriever.getEmbeddedPicture();
-        if (art!=null)
-        {
+        if (art != null) {
             Glide.with(context).asBitmap().load(art).into(holder.imageView);
-            //Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
-            // holder.imageView.setImageBitmap(bitmap);
         }
         retriever.release();
 
@@ -59,18 +56,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.holder> {
             @Override
             public void onClick(View v) {
 
-                // Fragment Section (Not Required)
-                //FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
-                //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                //fragmentTransaction.add(R.id.activityMainXML, new PlayerFragment());
-                //fragmentTransaction.addToBackStack(null);
-                //fragmentTransaction.commit();
-
-                //Bundle bundle = new Bundle();
-                //bundle.putInt("position", position);
-                //new PlayerFragment().setArguments(bundle);
-
-                // Intent Section (Required)
                 Intent intent = new Intent(context, PlayerActivity.class);
                 intent.putExtra("audioListPosition", position);
                 context.startActivity(intent);
@@ -80,16 +65,23 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.holder> {
 
     @Override
     public int getItemCount() {
-        return mFiles.size();
+        return audioMusicFiles.size();
     }
 
     class holder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView indSngNme;
+
         public holder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imgSong);
             indSngNme = itemView.findViewById(R.id.txtSongName);
         }
+    }
+
+    void updateAudioList(ArrayList<MusicFiles> audioMusicFilesArrayList) {
+        audioMusicFiles = new ArrayList<>();
+        audioMusicFiles.addAll(audioMusicFilesArrayList);
+        notifyDataSetChanged();
     }
 }

@@ -16,4 +16,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="equilizer_description">Control Equalizer</string>
     <string name="this_is_song_name">this is song name</string>
+    <string name="search">Search</string>
+    <string name="refresh">Refresh</string>
+    <string name="sort_by">Sort By</string>
 </resources>

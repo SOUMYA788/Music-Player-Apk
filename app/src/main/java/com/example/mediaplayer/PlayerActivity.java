@@ -42,6 +42,7 @@ import static com.example.mediaplayer.CreateNotification.ACTION_PLAY;
 import static com.example.mediaplayer.CreateNotification.ACTION_PREVIOUS;
 import static com.example.mediaplayer.CreateNotification.CHANNEL_ID;
 import static com.example.mediaplayer.MainActivity.musicFiles;
+import static com.example.mediaplayer.MusicAdapter.audioMusicFiles;
 
 public class PlayerActivity extends AppCompatActivity implements ServiceConnection, ButtonAction {
 
@@ -82,6 +83,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         viewElements();
 
         // for notification of music
+
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, this, BIND_AUTO_CREATE);
 
@@ -94,7 +96,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         // Getting Position through Intent
         position = getIntent().getIntExtra("audioListPosition", 0);
 
-        mySongs = musicFiles;
+        mySongs = audioMusicFiles;
 
         // Setup URI
         if (mySongs != null) {
@@ -126,7 +128,6 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         } else {
             showNotification(R.drawable.ic_play);
         }
-
         // ON CREATE METHOD ends here
     }
 
@@ -385,8 +386,15 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     }
 
     @Override
+    protected void onResume() {
+        Intent intent = new Intent(this, MusicService.class);
+        bindService(intent, this, BIND_AUTO_CREATE);
+        super.onResume();
+    }
+
+    @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        MusicService.myBinder binder = (MusicService.myBinder) service;
+        MusicService.MyBinder binder = (MusicService.MyBinder) service;
         musicService = binder.getService();
         musicService.buttonCallBack(PlayerActivity.this);
     }
@@ -432,7 +440,6 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0, notification);
-
 
     }
 

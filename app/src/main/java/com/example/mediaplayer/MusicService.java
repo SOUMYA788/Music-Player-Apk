@@ -2,14 +2,21 @@ package com.example.mediaplayer;
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 public class MusicService extends Service {
-    private IBinder mBinder = new myBinder();
+    private IBinder mBinder = new MyBinder();
+    MediaPlayer mediaPlayer;
+    ArrayList<MusicFiles> musicFiles = new ArrayList<>();
+    Uri uri;
     public static final String ACTION_PREVIOUS = "ACTION_PREVIOUS";
     public static final String ACTION_PLAY = "ACTION_PLAY";
     public static final String ACTION_NEXT = "ACTION_NEXT";
@@ -21,7 +28,7 @@ public class MusicService extends Service {
         return mBinder;
     }
 
-    public class myBinder extends Binder {
+    public class MyBinder extends Binder {
         MusicService getService() {
             return MusicService.this;
         }

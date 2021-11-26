@@ -19,7 +19,7 @@ import static com.example.mediaplayer.MainActivity.musicFiles;
 
 public class SongsListFragment extends Fragment {
     RecyclerView musicListRecyclerView;
-    MusicAdapter musicAdapter;
+    static MusicAdapter musicAdapter;
     NotificationManager notificationManager;
 
     public SongsListFragment() {
