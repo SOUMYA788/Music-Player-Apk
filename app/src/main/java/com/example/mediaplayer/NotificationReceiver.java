@@ -16,18 +16,15 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
                 case ACTION_PLAY:
-                    Toast.makeText(context, "Play", Toast.LENGTH_SHORT).show();
-                    intent1.putExtra("myActionName", intent.getAction());
+                    intent1.putExtra("myActionName", "playPause");
                     context.startService(intent1);
                     break;
                 case ACTION_NEXT:
-                    Toast.makeText(context, "Playing Next Song", Toast.LENGTH_SHORT).show();
-                    intent1.putExtra("myActionName", intent.getAction());
+                    intent1.putExtra("myActionName", "next");
                     context.startService(intent1);
                     break;
                 case ACTION_PREVIOUS:
-                    Toast.makeText(context, "Playing Previous Song", Toast.LENGTH_SHORT).show();
-                    intent1.putExtra("myActionName", intent.getAction());
+                    intent1.putExtra("myActionName", "previous");
                     context.startService(intent1);
                     break;
             }

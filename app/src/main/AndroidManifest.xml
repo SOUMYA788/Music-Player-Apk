@@ -4,7 +4,8 @@
     package="com.example.mediaplayer">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
 
 
     <application
@@ -13,22 +14,20 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
+        android:name=".ApplicationClass"
         android:theme="@style/Theme.MediaPlayer">
 
-        <activity android:name=".PlayerActivity"
+        <activity
+            android:name=".PlayerActivity"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name=".VideoPlayerActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".MainActivity">
-
-        </activity>
+            android:parentActivityName=".MainActivity"/>
 
         <activity
             android:name=".MainActivity"
-            android:label="MAX PLAYER"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +40,9 @@
             android:name=".MusicService"
             android:enabled="true"/>
 
-        <receiver android:name=".NotificationReceiver" android:enabled="true">
+        <receiver
+            android:name=".NotificationReceiver"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="ACTION_NEXT"/>
                 <action android:name="ACTION_PREVIOUS"/>

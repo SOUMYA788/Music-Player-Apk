@@ -21,8 +21,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -37,12 +39,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static com.example.mediaplayer.CreateNotification.ACTION_NEXT;
-import static com.example.mediaplayer.CreateNotification.ACTION_PLAY;
-import static com.example.mediaplayer.CreateNotification.ACTION_PREVIOUS;
-import static com.example.mediaplayer.CreateNotification.CHANNEL_ID;
+import static com.example.mediaplayer.ApplicationClass.ACTION_NEXT;
+import static com.example.mediaplayer.ApplicationClass.ACTION_PLAY;
+import static com.example.mediaplayer.ApplicationClass.ACTION_PREVIOUS;
+import static com.example.mediaplayer.ApplicationClass.CHANNEL_ID_1;
+import static com.example.mediaplayer.ApplicationClass.CHANNEL_ID_2;
 import static com.example.mediaplayer.MainActivity.musicFiles;
 import static com.example.mediaplayer.MusicAdapter.audioMusicFiles;
+import static java.lang.Thread.sleep;
 
 public class PlayerActivity extends AppCompatActivity implements ServiceConnection, ButtonAction {
 
@@ -56,26 +60,19 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     static boolean shuffelBool = false, repeatBool = false, favSongBtn = false;
 
     //other importants items
-    String sname;
-    byte[] sImg;
     public static final String EXTRA_NAME = "song_name";
-    static MediaPlayer mediaPlayer;
     int position;
     static ArrayList<MusicFiles> mySongs = new ArrayList<>(); // original Song Array
     static Uri uri;
-    ArrayList<File> favSongs; // Favorite Song Array
-    File favsngnamestr;
     Thread updateSeekBar;
     private Handler handler = new Handler();
 
     MusicService musicService;
-    MediaSessionCompat mediaSession;
-
-    //NotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_player);
 
@@ -83,11 +80,8 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         viewElements();
 
         // for notification of music
-
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, this, BIND_AUTO_CREATE);
-
-        mediaSession = new MediaSessionCompat(this, "Audio_Player");
 
         //Declare Rotation Animation
         customAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotation);
@@ -101,33 +95,43 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         // Setup URI
         if (mySongs != null) {
             playPause.setImageResource(R.drawable.ic_pause);
-            uri = uri.parse(mySongs.get(position).getPath());
+            uri = Uri.parse(mySongs.get(position).getPath());
         }
 
         // Reset Media Player
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
+        /*
+        if (musicService != null) {
+            musicService.stop();
+            musicService.release();
         }
+         */
 
-        setMusicAndArtistName();
-        setMusicImage();
-        displaySongName.setSelected(true);
+        //setMusicAndArtistName();
+        //setMusicImage();
+        //displaySongName.setSelected(true);
 
-        setupNewMediaPlayer();
-        imageView2.startAnimation(customAnimation);
+        //setupNewMediaPlayer
+        /*
+        musicService.createMediaPlayer(uri);
+        musicService.start();
+         */
 
-        setseekbarMaxAndUpdateSeekbar();
+        //imageView2.startAnimation(customAnimation);
 
-        setSongTiming();
+        //songSeekBar.setMax(musicService.getDuration());
+        Intent musicServiceIntent = new Intent(this, MusicService.class);
+        musicServiceIntent.putExtra("musicServicePosition", position);
+        startService(musicServiceIntent);
 
-        activatingAudioConsole();
+        //setSeekbarMaxAndUpdateSeekbar();
 
-        if (mediaPlayer.isPlaying()) {
-            showNotification(R.drawable.ic_pause);
-        } else {
-            showNotification(R.drawable.ic_play);
-        }
+        //setSongTiming();
+
+        //activatingAudioConsole();
+
+        //createNotification();
+
+
         // ON CREATE METHOD ends here
     }
 
@@ -159,13 +163,11 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         songSeekBar = findViewById(R.id.songSeekBar);
         songStartTime = findViewById(R.id.songStartTime);
         songEndTime = findViewById(R.id.songEndTime);
-        favSongs = new ArrayList<>();
     }
 
     // Activation of Media Console
     private void activatingRepeatButton() {
         repeat.setOnClickListener(v -> {
-            // created by me with youtube video help
             if (repeatBool) {
                 repeatBool = false;
                 repeat.setImageResource(R.drawable.ic_repeat);
@@ -199,7 +201,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
                 Intent eqIntent = new Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL);
                 eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getApplicationContext().getPackageName());
                 eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, getApplicationContext().getPackageName());
-                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, mediaPlayer.getAudioSessionId());
+                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, musicService.getAudioSessionId());
                 eqIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC);
                 startActivityForResult(eqIntent, 13);
                 Toast.makeText(getApplicationContext(), "Presenting Equalizer", Toast.LENGTH_SHORT).show();
@@ -213,8 +215,8 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         rewind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 3000);
+                if (musicService.isPlaying()) {
+                    musicService.seekTo(musicService.getCurrentPosition() - 3000);
                 }
             }
         });
@@ -224,8 +226,8 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         fastForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 3000);
+                if (musicService.isPlaying()) {
+                    musicService.seekTo(musicService.getCurrentPosition() + 3000);
                 }
             }
         });
@@ -248,21 +250,14 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         retriever.release();
     }
 
-    private void setupNewMediaPlayer() {
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-        mediaPlayer.start();
-    }
-
-    private void setseekbarMaxAndUpdateSeekbar() {
-
-        songSeekBar.setMax(mediaPlayer.getDuration());
-
+    private void setSeekbarMaxAndUpdateSeekbar() {
+        songSeekBar.setMax(musicService.getDuration());
         updateSeekBar = new Thread() {
             @Override
             public void run() {
                 try {
-                    while (0 < mediaPlayer.getDuration()) {
-                        songSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+                    while (0 < musicService.getDuration()) {
+                        songSeekBar.setProgress(musicService.getCurrentPosition());
                         sleep(500);
                     }
                 } catch (Exception e) {
@@ -275,8 +270,8 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         songSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (mediaPlayer != null && fromUser) {
-                    mediaPlayer.seekTo(progress);
+                if (musicService != null && fromUser) {
+                    musicService.seekTo(progress);
                 }
             }
 
@@ -286,20 +281,20 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mediaPlayer.seekTo(songSeekBar.getProgress());
+                musicService.seekTo(songSeekBar.getProgress());
             }
         });
     }
 
     public void setSongTiming() {
-        String endTime = createTime(mediaPlayer.getDuration());
+        String endTime = createTime(musicService.getDuration());
         songEndTime.setText(endTime);
         final Handler handler = new Handler();
         final int delay = 1000;
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                String currentTime = createTime(mediaPlayer.getCurrentPosition());
+                String currentTime = createTime(musicService.getCurrentPosition());
                 songStartTime.setText(currentTime);
                 handler.postDelayed(this, delay);
             }
@@ -326,13 +321,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     }
 
     private void currentSongOver() {
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                next.performClick();
-                Toast.makeText(PlayerActivity.this, "Playing Next Song", Toast.LENGTH_SHORT).show();
-            }
-        });
+        musicService.onCompletionListener();
     }
 
     private void activateNextSongButton() {
@@ -346,10 +335,12 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     }
 
     public void resetMediaplayerSeekbarAndAnimation() {
-        mediaPlayer.stop();
-        playPause.setImageResource(R.drawable.ic_play);
-        mediaPlayer.release();
-        imageView2.clearAnimation();
+        if (musicService.isPlaying()) {
+            musicService.stop();
+            playPause.setImageResource(R.drawable.ic_play);
+            musicService.release();
+            imageView2.clearAnimation();
+        }
     }
 
     private int getRandom(int i) {
@@ -359,20 +350,35 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
 
     public void changeMusicInMediaplayer() {
         songSeekBar.setProgress(0);
-        Uri u = Uri.parse(mySongs.get(position).getPath());
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), u);
+        //Uri u = Uri.parse(musicFiles.get(position).getPath());
+        musicService.createMediaPlayer(position);
         setMusicAndArtistName();
-        songSeekBar.setMax(mediaPlayer.getDuration());
+        songSeekBar.setMax(musicService.getDuration());
         displaySongName.setSelected(true);
         playPause.setImageResource(R.drawable.ic_pause);
-        mediaPlayer.start();
+
+        /*
+        PlayerActivity.this.runOnUiThread(() -> {
+            if (musicService != null) {
+                try {
+                    int currentPosition = musicService.getCurrentPosition();
+                    songSeekBar.setProgress(currentPosition);
+                    sleep(500);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        */
+        musicService.start();
         imageView2.startAnimation(customAnimation);
         setSongTiming();
         imageAnimation();
+
     }
 
     public void imageAnimation() {
-        if (mediaPlayer.isPlaying()) {
+        if (musicService.isPlaying()) {
             imageView2.startAnimation(customAnimation);
         } else {
             imageView2.clearAnimation();
@@ -396,51 +402,22 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     public void onServiceConnected(ComponentName name, IBinder service) {
         MusicService.MyBinder binder = (MusicService.MyBinder) service;
         musicService = binder.getService();
+
         musicService.buttonCallBack(PlayerActivity.this);
+
+        setMusicAndArtistName();
+        setMusicImage();
+        displaySongName.setSelected(true);
+        imageView2.startAnimation(customAnimation);
+        setSeekbarMaxAndUpdateSeekbar();
+        setSongTiming();
+        activatingAudioConsole();
+        createNotification();
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
         musicService = null;
-    }
-
-    public void showNotification(int playPauseSign) {
-        Intent intent = new Intent(this, PlayerActivity.class);
-        intent.setAction(Intent.ACTION_MAIN);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        // Previous Intent
-        Intent prevIntent = new Intent(this, NotificationReceiver.class).setAction(ACTION_PREVIOUS);
-        PendingIntent prevPendingIntent = PendingIntent.getBroadcast(this, 0,
-                prevIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Play Intent
-        Intent playIntent = new Intent(this, NotificationReceiver.class).setAction(ACTION_PLAY);
-        PendingIntent playPendingIntent = PendingIntent.getBroadcast(this, 0,
-                playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Next Intent
-        Intent nextIntent = new Intent(this, NotificationReceiver.class).setAction(ACTION_NEXT);
-        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this, 0,
-                nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.ic_music);
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_music)
-                .setLargeIcon(icon)
-                .setContentTitle(mySongs.get(position).getTitle())
-                .setContentText(mySongs.get(position).getArtist())
-                .addAction(R.drawable.ic_skip_previous, "Previous", prevPendingIntent)
-                .addAction(playPauseSign, "Play", playPendingIntent)
-                .addAction(R.drawable.ic_skip_next, "Next", nextPendingIntent)
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSession.getSessionToken()))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setOnlyAlertOnce(true)
-                .build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notification);
-
     }
 
     // Button Functions
@@ -449,65 +426,56 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
         resetMediaplayerSeekbarAndAnimation();
         if (shuffelBool && !repeatBool) {
             position = getRandom(mySongs.size() - 1);
-            setMusicImage();
-        } else if (!shuffelBool && !repeatBool) {
-            position = ((position + 1) % mySongs.size());
-            setMusicImage();
         } else {
-            if (repeatBool && !shuffelBool) {
-                setMusicImage();
+            if (!shuffelBool && !repeatBool) {
+                position = ((position + 1) % mySongs.size());
             }
         }
-
+        setMusicImage();
         changeMusicInMediaplayer();
         currentSongOver();
-
-        //createNotification();
-        if (mediaPlayer.isPlaying()) {
-            showNotification(R.drawable.ic_pause);
-        } else {
-            showNotification(R.drawable.ic_play);
-        }
+        createNotification();
     }
 
     @Override
     public void previousButtonClicked() {
         resetMediaplayerSeekbarAndAnimation();
+
         if (shuffelBool && !repeatBool) {
             position = getRandom(mySongs.size() - 1);
-            setMusicImage();
 
         } else if (!shuffelBool && !repeatBool) {
             position = ((position - 1) % mySongs.size());
             setMusicImage();
-
-        } else {
-            setMusicImage();
         }
+
+        setMusicImage();
         changeMusicInMediaplayer();
         currentSongOver();
+        createNotification();
+    }
 
-        //createNotification();
-        if (mediaPlayer.isPlaying()) {
-            showNotification(R.drawable.ic_pause);
+    void createNotification() {
+        if (musicService.isPlaying()) {
+            musicService.showNotification(R.drawable.ic_pause);
         } else {
-            showNotification(R.drawable.ic_play);
+            musicService.showNotification(R.drawable.ic_play);
         }
     }
 
     @Override
     public void playPauseButtonClicked() {
-        if (mediaPlayer.isPlaying()) {
+        if (musicService.isPlaying()) {
             imageView2.clearAnimation();
-            mediaPlayer.pause();
+            musicService.pause();
             playPause.setImageResource(R.drawable.ic_play);
-            showNotification(R.drawable.ic_play);
+            musicService.showNotification(R.drawable.ic_play);
 
         } else {
             imageView2.startAnimation(customAnimation);
-            mediaPlayer.start();
+            musicService.start();
             playPause.setImageResource(R.drawable.ic_pause);
-            showNotification(R.drawable.ic_pause);
+            musicService.showNotification(R.drawable.ic_pause);
         }
     }
 }

@@ -1,23 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/searchMusic"
         android:icon="@drawable/ic_baseline_search_24"
         android:title="@string/search"
-        app:showAsAction="ifRoom"
-        app:actionViewClass="android.widget.SearchView" />
+        android:iconTint="@color/white"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/refreshMusic"
         android:icon="@drawable/ic_refresh"
         android:title="@string/refresh"
-        app:showAsAction="ifRoom" />
+        android:iconTint="@color/white"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
 
     <item
         android:id="@+id/musicSortBy"
         android:icon="@drawable/ic_sort"
         android:title="@string/sort_by"
-        app:showAsAction="ifRoom" />
+        android:iconTint="@color/white"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/byName"
+                android:title="By Name"
+                android:iconTint="@color/white"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/byDate"
+                android:title="By Date"
+                android:iconTint="@color/white"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/bySize"
+                android:title="By Size"
+                android:iconTint="@color/white"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/themes"
+        android:title="Themes"
+        android:icon="@drawable/ic_palette"
+        app:showAsAction="ifRoom"
+        android:iconTint="@color/white"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/renameAudio"
+        android:title="Rename"
+        android:icon="@drawable/ic_edit"
+        android:iconTint="@color/white"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/deleteAudio"
+        android:title="Delete"
+        android:icon="@drawable/ic_delete"
+        android:iconTint="@color/white"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/sendAudio"
+        android:title="Send"
+        android:icon="@drawable/ic_share"
+        android:iconTint="@color/white"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
+
 </menu>

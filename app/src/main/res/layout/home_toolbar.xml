@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/customToolbarMusicList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/listColor"
     android:minHeight="?attr/actionBarSize"
     app:title="MAX PLAYER"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    app:titleTextColor="@color/white"
+    android:foregroundTint="@color/white"
+    app:menu="@menu/search_music" />
