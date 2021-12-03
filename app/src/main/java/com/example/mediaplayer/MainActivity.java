@@ -32,6 +32,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,12 +57,25 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar customToolbarMusicList;
     private String SORT_PREF = "Sort_Order";
+    FrameLayout bottomPlayer;
+
+    public static final String LAST_TRACK = "LAST_TRACK";
+    public static final String MUSIC_FILE = "STORED_MUSIC";
+    public static final String ARTIST_NAME = "ARTIST_NAME";
+    public static final String TRACK = "TRACK";
+    public static boolean SHOW_NOW_PLAYING = false;
+    public static String PATH = null;
+    public static String ARTISTNAME = null;
+    public static String TRACKNAME  = null;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         customToolbarMusicList = findViewById(R.id.customToolbarMusicList);
+        bottomPlayer = findViewById(R.id.now_playing);
         setSupportActionBar(customToolbarMusicList);
 
         permission();
@@ -126,28 +141,6 @@ public class MainActivity extends AppCompatActivity {
         musicFiles = getAllAudio(MainActivity.this);
         videoMusicFiles = getAllVideo(MainActivity.this);
         initViewPager();
-    }
-
-    public void runtimePermission() {
-        Dexter.withContext(this).withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .withListener(new PermissionListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        musicFiles = getAllAudio(MainActivity.this);
-                        videoMusicFiles = getAllVideo(MainActivity.this);
-                        initViewPager();
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                        permissionToken.continuePermissionRequest();
-                    }
-                }).check();
     }
 
     private void initViewPager() {
@@ -271,6 +264,22 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             startCollectMusic();
+        }
+        SharedPreferences preferences = getSharedPreferences(LAST_TRACK, MODE_PRIVATE);
+        String path = preferences.getString(MUSIC_FILE, null);
+        String artist = preferences.getString(ARTIST_NAME, null);
+        String songName = preferences.getString(TRACK, null);
+
+        if (path!=null){
+            SHOW_NOW_PLAYING = true;
+            PATH = path;
+            ARTISTNAME = artist;
+            TRACKNAME = songName;
+        }else {
+            SHOW_NOW_PLAYING = false;
+            PATH = null;
+            ARTISTNAME = null;
+            TRACKNAME = null;
         }
     }
 

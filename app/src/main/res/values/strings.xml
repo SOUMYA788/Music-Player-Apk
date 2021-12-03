@@ -19,4 +19,8 @@
     <string name="search">Search</string>
     <string name="refresh">Refresh</string>
     <string name="sort_by">Sort By</string>
+    <string name="music_image">Music Image</string>
+    <string name="shuffel_todo">Used to make shuffel music</string>
+    <string name="previous_description">Use to move previous music</string>
+    <string name="rewind_description">Will Use to rewind music</string>
 </resources>

@@ -1,55 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activityMainXML"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activityMainXML"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/listColor"
     android:orientation="vertical"
     tools:actionBarNavMode="tabs"
-    tools:menu="@menu/search_music"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:menu="@menu/search_music">
+
 
     <include
         android:id="@+id/customToolbarMusicList"
-        layout="@layout/home_toolbar"/>
+        layout="@layout/home_toolbar" />
 
-    <LinearLayout
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/musicListMenuTabLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="2dp">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/customToolbarMusicList"
+        android:background="@color/listColor"
+        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorFullWidth="false"
+        app:tabTextColor="@color/listTabItemColor" />
 
-        <LinearLayout
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/musicListViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/musicListMenuTabLayout" />
+
+
+    <FrameLayout
+        android:id="@+id/now_playing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <fragment
+            android:name="com.example.mediaplayer.NowPlayingBottomFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/musicListMenuTabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/listColor"
-                app:tabIndicatorFullWidth="false"
-                app:tabTextColor="@color/listTabItemColor"
-                app:tabIndicatorColor="@color/listTabItemColor" />
+            tools:layout="@layout/fragment_now_playing_bottom" />
 
-        </LinearLayout>
+    </FrameLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:padding="5dp">
 
-            <androidx.viewpager.widget.ViewPager
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/musicListViewPager" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

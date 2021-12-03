@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -36,15 +37,21 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public static final String ACTION_PREVIOUS = "ACTION_PREVIOUS";
     public static final String ACTION_PLAY = "ACTION_PLAY";
     public static final String ACTION_NEXT = "ACTION_NEXT";
+    public static final String LAST_TRACK = "LAST_TRACK";
+    public static final String MUSIC_FILE = "STORED_MUSIC";
+    public static final String ARTIST_NAME = "ARTIST_NAME";
+    public static final String TRACK = "TRACK";
+
+    public static final boolean musicPlaying = false;
+
     ButtonAction buttonAction;
-    int position;
+    int position = 0;
     MediaSessionCompat mediaSession;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mediaSession = new MediaSessionCompat(this, "Audio_Player");
-
     }
 
     @Nullable
@@ -62,6 +69,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         int myPosition = intent.getIntExtra("musicServicePosition", 0);
         String actionName = intent.getStringExtra("myActionName");
 
@@ -72,20 +80,13 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         if (actionName != null) {
             switch (actionName) {
                 case "playPause":
-                    if (buttonAction != null) {
-                        buttonAction.playPauseButtonClicked();
-                    }
+                    activatePlayPauseBtn();
                     break;
                 case "next":
-                    if (buttonAction != null) {
-
-                        buttonAction.nextButtonClicked();
-                    }
+                    activateNextBtn();
                     break;
                 case "previous":
-                    if (buttonAction != null) {
-                        buttonAction.previousButtonClicked();
-                    }
+                    activatePreviousBtn();
                     break;
             }
         }
@@ -99,18 +100,14 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             mediaPlayer.stop();
             mediaPlayer.release();
             if (musicFiles != null) {
-                startMusic();
+                startMediaPlayer();
             }
         } else {
-            startMusic();
+            startMediaPlayer();
         }
     }
 
-    private void startMusic() {
-        //Uri uri =  Uri.parse(musicFiles.get(position).getPath());
-        createMediaPlayer(position);
-        startMediaPlayer();
-    }
+
 
     private void startMediaPlayer() {
         // Uri uri = Uri.parse(musicFiles.get(position).getPath());
@@ -150,9 +147,15 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         return mediaPlayer.getCurrentPosition();
     }
 
-    void createMediaPlayer(int myPosition) {
+    void createMediaPlayer( int myPosition) {
         position = myPosition;
         Uri u = Uri.parse(musicFiles.get(position).getPath());
+        SharedPreferences.Editor editor = getSharedPreferences(LAST_TRACK, MODE_PRIVATE).edit();
+        editor.putString(MUSIC_FILE, u.toString());
+        editor.putString(ARTIST_NAME, musicFiles.get(position).getArtist());
+        editor.putString(TRACK, musicFiles.get(position).getTitle());
+        editor.apply();
+
         mediaPlayer = MediaPlayer.create(getBaseContext(), u);
     }
 
@@ -166,7 +169,6 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        //TODO: NOT TESTED
         if (buttonAction != null) {
             if (mediaPlayer != null) {
                 buttonAction.nextButtonClicked();
@@ -234,5 +236,23 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         retriever.setDataSource(uri);
         byte[] art = retriever.getEmbeddedPicture();
         return art;
+    }
+
+    void activatePlayPauseBtn(){
+        if (buttonAction != null) {
+            buttonAction.playPauseButtonClicked();
+        }
+    }
+    void activateNextBtn(){
+        if (buttonAction != null) {
+            buttonAction.nextButtonClicked();
+        }
+    }
+
+    void activatePreviousBtn(){
+        if (buttonAction != null) {
+            buttonAction.previousButtonClicked();
+
+        }
     }
 }

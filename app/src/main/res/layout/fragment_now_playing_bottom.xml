@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/listColor"
+    tools:context=".NowPlayingBottomFragment">
+
+    <LinearLayout
+        android:id="@+id/bottom_mini_playing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingTop="15dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/now_playing_bottom_album_art"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginEnd="30dp"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:contentDescription="@string/music_image" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:id="@+id/now_playing_bottom_song_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/now_playing_bottom_song_artist_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom_mini_playing_music_controllers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:paddingStart="50dp"
+            android:paddingEnd="50dp">
+
+            <ImageView
+                android:id="@+id/now_playing_previous"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/ic_skip_previous"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/previous_description"
+                android:layout_gravity="center"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/now_playing_rewind"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/ic_fast_rewind"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/rewind_description" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/now_playing_playPause"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:backgroundTint="@color/white"
+                android:background="@drawable/ic_play_2"
+                android:contentDescription="@string/play_pause" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/now_playing_fastForward"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/ic_fast_forward"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/fast_forward" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/now_playing_next"
+                android:layout_height="35dp"
+                android:layout_width="35dp"
+                android:background="@drawable/ic_skip_next"
+                android:backgroundTint="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

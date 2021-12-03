@@ -4,4 +4,5 @@ public interface ButtonAction {
     void nextButtonClicked();
     void previousButtonClicked();
     void playPauseButtonClicked();
+
 }

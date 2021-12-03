@@ -66,6 +66,7 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
     static Uri uri;
     Thread updateSeekBar;
     private Handler handler = new Handler();
+    public static boolean MUSIC_PLAYING;
 
     MusicService musicService;
 
@@ -470,12 +471,14 @@ public class PlayerActivity extends AppCompatActivity implements ServiceConnecti
             musicService.pause();
             playPause.setImageResource(R.drawable.ic_play);
             musicService.showNotification(R.drawable.ic_play);
+            MUSIC_PLAYING = true;
 
         } else {
             imageView2.startAnimation(customAnimation);
             musicService.start();
             playPause.setImageResource(R.drawable.ic_pause);
             musicService.showNotification(R.drawable.ic_pause);
+            MUSIC_PLAYING = false;
         }
     }
 }
