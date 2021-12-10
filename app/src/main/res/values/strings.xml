@@ -23,4 +23,11 @@
     <string name="shuffel_todo">Used to make shuffel music</string>
     <string name="previous_description">Use to move previous music</string>
     <string name="rewind_description">Will Use to rewind music</string>
+    <string name="displaySongName_Text">Song Name</string>
+    <string name="delete_menu">DELETE</string>
+    <string name="rename_menu">RENAME</string>
+    <string name="send_menu">SEND</string>
+    <string name="share_menu">SHARE</string>
+    <string name="property_menu">PROPERTY</string>
+
 </resources>

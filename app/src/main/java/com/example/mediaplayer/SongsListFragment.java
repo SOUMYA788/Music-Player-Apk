@@ -32,6 +32,7 @@ public class SongsListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_songs_list, container, false);
         musicListRecyclerView = view.findViewById(R.id.musicListRecyclerView);
+
         musicListRecyclerView.setHasFixedSize(true);
 
         if (!(musicFiles.size()<1))

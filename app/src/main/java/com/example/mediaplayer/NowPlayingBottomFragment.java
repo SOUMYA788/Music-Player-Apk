@@ -33,7 +33,7 @@ import static com.example.mediaplayer.PlayerActivity.MUSIC_PLAYING;
 //import static com.example.mediaplayer.PlayerActivity.MUSIC_PLAYING;
 
 public class NowPlayingBottomFragment extends Fragment implements ServiceConnection {
-    ImageView albumImage, playPrevious, rewind, playPause, fastForward, playNext;
+    ImageView albumImage, playPrevious, playPause, playNext;
     TextView songName, songArtistName;
     View view;
     ButtonAction buttonAction;
@@ -59,9 +59,9 @@ public class NowPlayingBottomFragment extends Fragment implements ServiceConnect
         getAllItemViews();
 
         if (MUSIC_PLAYING) {
-            playPause.setImageResource(R.drawable.ic_round_pause);
-        } else {
             playPause.setImageResource(R.drawable.ic_play_2);
+        } else {
+            playPause.setImageResource(R.drawable.ic_round_pause);
         }
 
         playPause.setOnClickListener(v -> {
@@ -82,7 +82,7 @@ public class NowPlayingBottomFragment extends Fragment implements ServiceConnect
                 }
                 playPause.setImageResource(R.drawable.ic_play);
                 musicService.activateNextBtn();
-                if (musicService.isPlaying()){
+                if (musicService.isPlaying()) {
                     playPause.setImageResource(R.drawable.ic_pause);
                 }
                 // Update music name, music title and music image.
@@ -110,7 +110,6 @@ public class NowPlayingBottomFragment extends Fragment implements ServiceConnect
                         ARTISTNAME = null;
                         TRACKNAME = null;
                     }
-
 
                     if (SHOW_NOW_PLAYING) {
                         if (PATH != null) {
@@ -142,8 +141,10 @@ public class NowPlayingBottomFragment extends Fragment implements ServiceConnect
     @Override
     public void onResume() {
         super.onResume();
+        // Adding Details in Now Playing Mini View.
         if (SHOW_NOW_PLAYING) {
             if (PATH != null) {
+                // Adding Image in Mini View.
                 byte[] art = getAudioAlbumArt(PATH);
                 if (getContext() != null) {
                     if (art != null) {
@@ -152,8 +153,10 @@ public class NowPlayingBottomFragment extends Fragment implements ServiceConnect
                         Glide.with(getContext()).load(R.drawable.cd_img).into(albumImage);
                     }
                 }
+                // Adding Song Name and Artist Name.
                 songName.setText(TRACKNAME);
                 songArtistName.setText(ARTISTNAME);
+
                 Intent intent = new Intent(getContext(), MusicService.class);
                 if (getContext() != null) {
                     getContext().bindService(intent, this, Context.BIND_AUTO_CREATE);
@@ -162,10 +165,12 @@ public class NowPlayingBottomFragment extends Fragment implements ServiceConnect
         }
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
+        if (getContext()!=null){
+            getContext().unbindService(this);
+        }
     }
 
     @Override
@@ -181,11 +186,8 @@ public class NowPlayingBottomFragment extends Fragment implements ServiceConnect
         songName = view.findViewById(R.id.now_playing_bottom_song_name);
         songArtistName = view.findViewById(R.id.now_playing_bottom_song_artist_name);
         playPrevious = view.findViewById(R.id.now_playing_previous);
-        rewind = view.findViewById(R.id.now_playing_rewind);
         playPause = view.findViewById(R.id.now_playing_playPause);
-        fastForward = view.findViewById(R.id.now_playing_fastForward);
         playNext = view.findViewById(R.id.now_playing_next);
-        fastForward = view.findViewById(R.id.now_playing_fastForward);
     }
 
     private byte[] getAudioAlbumArt(String uri) {
@@ -205,6 +207,4 @@ public class NowPlayingBottomFragment extends Fragment implements ServiceConnect
     public void onServiceDisconnected(ComponentName name) {
         musicService = null;
     }
-
-
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/deleteAudio"
+        android:title="@string/delete_menu"
+        android:icon="@drawable/ic_delete"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/renameAudio"
+        android:title="@string/rename_menu"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/sendAudio"
+        android:title="@string/share_menu"
+        android:icon="@drawable/ic_share"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/propertyAudio"
+        android:title="@string/property_menu"
+        android:icon="@drawable/ic_properties"
+        app:showAsAction="never"/>
+
+</menu>

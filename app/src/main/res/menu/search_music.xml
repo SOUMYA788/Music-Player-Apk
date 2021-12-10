@@ -53,29 +53,4 @@
         app:showAsAction="ifRoom"
         android:iconTint="@color/white"
         android:visible="false"/>
-
-    <item
-        android:id="@+id/renameAudio"
-        android:title="Rename"
-        android:icon="@drawable/ic_edit"
-        android:iconTint="@color/white"
-        app:showAsAction="ifRoom"
-        android:visible="false"/>
-
-    <item
-        android:id="@+id/deleteAudio"
-        android:title="Delete"
-        android:icon="@drawable/ic_delete"
-        android:iconTint="@color/white"
-        app:showAsAction="ifRoom"
-        android:visible="false"/>
-
-    <item
-        android:id="@+id/sendAudio"
-        android:title="Send"
-        android:icon="@drawable/ic_share"
-        android:iconTint="@color/white"
-        app:showAsAction="ifRoom"
-        android:visible="false"/>
-
 </menu>

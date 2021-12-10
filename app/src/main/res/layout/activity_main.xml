@@ -23,6 +23,7 @@
         android:layout_below="@id/customToolbarMusicList"
         android:background="@color/listColor"
         app:tabIndicatorColor="@color/white"
+        app:tabIndicatorHeight="3dp"
         app:tabIndicatorFullWidth="false"
         app:tabTextColor="@color/listTabItemColor" />
 

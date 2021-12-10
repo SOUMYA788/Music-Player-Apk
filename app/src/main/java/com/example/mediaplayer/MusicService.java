@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -42,8 +43,6 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     public static final String ARTIST_NAME = "ARTIST_NAME";
     public static final String TRACK = "TRACK";
 
-    public static final boolean musicPlaying = false;
-
     ButtonAction buttonAction;
     int position = 0;
     MediaSessionCompat mediaSession;
@@ -66,11 +65,13 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         }
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        // Creating a position as myPosition and send this position in playMedia as argument
         int myPosition = intent.getIntExtra("musicServicePosition", 0);
+        // we ultimately send this into position variable in playMedia method.
+
         String actionName = intent.getStringExtra("myActionName");
 
         if (myPosition != 0) {
@@ -94,11 +95,12 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     }
 
     private void playMedia(int startPosition) {
+        // we receive myPosition send by line no 78
         musicFiles = audioMusicFiles;
         position = startPosition;
         if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
+            stop();
+            release();
             if (musicFiles != null) {
                 startMediaPlayer();
             }
@@ -107,12 +109,10 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         }
     }
 
-
-
     private void startMediaPlayer() {
         // Uri uri = Uri.parse(musicFiles.get(position).getPath());
         createMediaPlayer(position);
-        mediaPlayer.start();
+        start();
     }
 
     public void buttonCallBack(ButtonAction buttonAction) {
@@ -147,16 +147,17 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         return mediaPlayer.getCurrentPosition();
     }
 
-    void createMediaPlayer( int myPosition) {
-        position = myPosition;
-        Uri u = Uri.parse(musicFiles.get(position).getPath());
+    void createMediaPlayer( int Position) {
+        position = Position;
+        uri = Uri.parse(musicFiles.get(position).getPath());
+
         SharedPreferences.Editor editor = getSharedPreferences(LAST_TRACK, MODE_PRIVATE).edit();
-        editor.putString(MUSIC_FILE, u.toString());
+        editor.putString(MUSIC_FILE, uri.toString());
         editor.putString(ARTIST_NAME, musicFiles.get(position).getArtist());
         editor.putString(TRACK, musicFiles.get(position).getTitle());
         editor.apply();
 
-        mediaPlayer = MediaPlayer.create(getBaseContext(), u);
+        mediaPlayer = MediaPlayer.create(getBaseContext(), uri);
     }
 
     void pause() {
@@ -226,9 +227,6 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 .build();
 
         startForeground(2,  notification);
-
-        // NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        // notificationManager.notify(0, notification);
     }
 
     private byte[] getAudioAlbumArt(String uri) {
@@ -243,6 +241,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
             buttonAction.playPauseButtonClicked();
         }
     }
+
     void activateNextBtn(){
         if (buttonAction != null) {
             buttonAction.nextButtonClicked();

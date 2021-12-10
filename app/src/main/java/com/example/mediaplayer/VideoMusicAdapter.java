@@ -6,11 +6,8 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -23,11 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Size;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -36,7 +29,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.zip.Inflater;
 
 public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.VideoHolder> {
 
@@ -66,7 +58,7 @@ public class VideoMusicAdapter extends RecyclerView.Adapter<VideoMusicAdapter.Vi
             @Override
             public void onClick(View v) {
                 bottomSheetDialog = new BottomSheetDialog(context, R.style.BottomSheetTheme);
-                View bottomSheetView = LayoutInflater.from(context).inflate(R.layout.video_bottom_sheet_layout,
+                View bottomSheetView = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_layout,
                         v.findViewById(R.id.BottomSheet));
 
                 // Option Play

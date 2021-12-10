@@ -59,27 +59,38 @@ public class MainActivity extends AppCompatActivity {
     private String SORT_PREF = "Sort_Order";
     FrameLayout bottomPlayer;
 
+    // Getting Share Preference Keys Value in a static string.
     public static final String LAST_TRACK = "LAST_TRACK";
-    public static final String MUSIC_FILE = "STORED_MUSIC";
+    public static final String MUSIC_FILE_PATH = "STORED_MUSIC";
     public static final String ARTIST_NAME = "ARTIST_NAME";
     public static final String TRACK = "TRACK";
+
+    // Copy value of keys in another static string and use them desired area.
     public static boolean SHOW_NOW_PLAYING = false;
     public static String PATH = null;
     public static String ARTISTNAME = null;
     public static String TRACKNAME  = null;
-
-
+    File internalStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         customToolbarMusicList = findViewById(R.id.customToolbarMusicList);
         bottomPlayer = findViewById(R.id.now_playing);
         setSupportActionBar(customToolbarMusicList);
 
         permission();
-        //runtimePermission();
+    }
+
+    public void permission() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            startCollectMusic();
+        } else {
+            continuePermissionRequest();
+        }
     }
 
     @Override
@@ -94,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
                     if (!showRationale) {
                         // User check never ask again
                         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Background);
-                        builder.setTitle("APP PERMISSION").
-                                setMessage("For playing videos first of all i need to collect all music files in your storage. And access your storage I need device permission" + "\n\n\n"
+                        builder.setTitle("APP PERMISSION")
+                                .setMessage("For playing videos first of all i need to collect all music files in your storage. And access your storage I need device permission" + "\n\n\n"
                                         + "Now Follow this steps if you want to allow me" + "\n\n"
                                         + "01. Open Setting by bellow button" + "\n"
                                         + "02. Click on Permissions" + "\n"
@@ -120,15 +131,6 @@ public class MainActivity extends AppCompatActivity {
                     startCollectMusic();
                 }
             }
-        }
-    }
-
-    public void permission() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            startCollectMusic();
-        } else {
-            continuePermissionRequest();
         }
     }
 
@@ -190,11 +192,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public ArrayList<MusicFiles> getAllAudio(Context context) {
+
         SharedPreferences sharedPreferences = getSharedPreferences(SORT_PREF, MODE_PRIVATE);
         String Sort_Order = sharedPreferences.getString("sorting", "sortByName");
+
         ArrayList<MusicFiles> tempAudioList = new ArrayList<>();
         String order = null;
+
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+
         switch (Sort_Order) {
 
             case "sortByName":
@@ -206,14 +212,15 @@ public class MainActivity extends AppCompatActivity {
             case "sortBySize":
                 order = MediaStore.MediaColumns.SIZE + " DESC";
                 break;
-
         }
+
         String[] projection = {
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATA, // For Path
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media._ID
         };
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null, order);
         if (cursor != null) {
@@ -223,8 +230,9 @@ public class MainActivity extends AppCompatActivity {
                 String duration = cursor.getString(2);
                 String path = cursor.getString(3);
                 String artist = cursor.getString(4);
+                String id = cursor.getString(5);
 
-                MusicFiles musicFiles = new MusicFiles(path, title, artist, album, duration);
+                MusicFiles musicFiles = new MusicFiles(path, title, artist, album, duration, id);
                 tempAudioList.add(musicFiles);
             }
             cursor.close();
@@ -262,11 +270,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             startCollectMusic();
         }
+        
         SharedPreferences preferences = getSharedPreferences(LAST_TRACK, MODE_PRIVATE);
-        String path = preferences.getString(MUSIC_FILE, null);
+
+        /*
+            * String items are temporary items, they are goes into psfs Global Variables, which is used into required area.
+            * Keys comes from Genuine Preference Key. Value copy to String Item and they goes into psfs Global Variable.
+         */
+
+        String path = preferences.getString(MUSIC_FILE_PATH, null);
         String artist = preferences.getString(ARTIST_NAME, null);
         String songName = preferences.getString(TRACK, null);
 
