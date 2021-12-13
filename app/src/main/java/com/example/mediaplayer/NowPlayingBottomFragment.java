@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -142,6 +143,7 @@ public class NowPlayingBottomFragment extends Fragment implements ServiceConnect
     public void onResume() {
         super.onResume();
         // Adding Details in Now Playing Mini View.
+        Log.e("ON_RESUME_PAUSE", "ON RESUME STARTED");
         if (SHOW_NOW_PLAYING) {
             if (PATH != null) {
                 // Adding Image in Mini View.
@@ -165,13 +167,17 @@ public class NowPlayingBottomFragment extends Fragment implements ServiceConnect
         }
     }
 
+/*
     @Override
     public void onPause() {
+        Log.e("ON_RESUME_PAUSE", "ON PAUSE STARTED");
         super.onPause();
         if (getContext()!=null){
             getContext().unbindService(this);
         }
     }
+    */
+
 
     @Override
     public void onDestroy() {
